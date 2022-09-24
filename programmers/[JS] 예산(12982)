@@ -1,0 +1,26 @@
+/**
+ * 풀이 방법을 놓고 꽤 고민했다.
+ * 
+ * 처음에는 조합을 이용하여 budget을 넘어서는 모든 합의 경우의 수를 구하려했는데,
+ * 단순하게 경우의 수를 구하는 것이 아닌 합까지 계산해야했기에 이 경우 너무 복잡했다.
+ * 
+ * 더 간단한 접근법이 있을것이라 생각했고,
+ * 문득 오름차순으로 정렬하고 작은 수부터 합치다가 budget을 초과하기 전까지가
+ * 결국 예산을 지원할 수 있는 최대치가 될 것이라 생각했다.
+ */
+
+
+ function solution(D, budget) {
+    D.sort((a,b)=>a-b);
+    
+    const answer = [];
+    for(const d of D) {
+        answer.push(d)
+        if (answer.reduce((a,b)=>a+b, 0) > budget) {
+            answer.pop();
+            break;
+        }
+    }
+
+    return answer.length;
+}
