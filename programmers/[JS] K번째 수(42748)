@@ -1,0 +1,17 @@
+/**
+ * 문제 요구사항 순서대로 코드를 짜면 되는 단순한 문제였다.
+ * 
+ * 주어진 배열을 각 커맨드에 따라 자르고, 정렬하고 k-1 인덱스의 값을 차례대로 구했다.
+ */
+
+
+ function solution(array, commands) {
+    const result = [];
+    commands.forEach( ([ i, j, k ]) => {
+        const slice = array.slice(i-1, j);
+        slice.sort((a,b)=>a-b);
+        result.push(slice[k-1]);
+    });    
+
+    return result;
+}
