@@ -1,0 +1,19 @@
+/**
+ * 임의의 숫자 N에 대하여 나머지가 1이 된다는 것은,
+ * N = n*g +1
+ * 이라는 것과 같다.
+ * 
+ * 따라서, N-1의 약수 중 최솟값을 구하면 되며,
+ * 1은 N-1과 N의 공약수이기 때문에 제외한다.
+ */
+
+
+ function solution(N) {
+    const devisor = new Set([N-1]);
+
+    for(i=2; i<=(N-1)/2; i++) {
+        if( (N-1)%i === 0 ) devisor.add(i)
+    }
+
+    return Math.min(...devisor);
+}
