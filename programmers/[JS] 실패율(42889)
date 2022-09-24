@@ -1,0 +1,41 @@
+/**
+ * 먼저 각 스테이지에 있는 사람의 수를 배열화한 failList를 만들었다.
+ * failList의 앞에서부터 n번째부터 마지막까지를 더한 값은 n번째 스테이지를 도전한 사람의 수다.
+ * 따라서, 합을 구하고 가장 앞의 값을 shift()로 리스트에서 제거하면,
+ * 다음번에는 자연스럽게 n+1번째 스테이지의 도전자들을 구할 수 있다.
+ * 
+ * 그렇게 각 스테이지의 도전자 수와, shift()로 제거한 해당 스테이지의 실패자 수를
+ * failrate라는 배열에 [스테이지번호, 실패자수/도전자수]를 새로 넣었다.
+ * 
+ * 여기서 중요한 점은, 
+ * failList는 전체 도전자의 수를 세기 위해 총 스테이지 수 N보다 1많은 원소를 받는다.
+ * 하지만, failrate를 만들 때는 마지막 원소, 
+ * 즉 모든 스테이지를 클리어한 사람은 고려할 필요가 없으므로 N번의 반복만 하면 된다.
+ */
+
+
+ function solution(N, stages) {
+    const failList = Array.from({length: N+1}, (_, i)=>0)
+    stages.forEach( (stage) =>{
+        failList[stage-1]++;
+    });
+
+    const failrate = [];
+    for(i=0; i<N; i++) {
+        const totalTry = failList.reduce((a,b)=>a+b);
+        const failed = failList.shift();
+        failrate.push([i+1,failed/totalTry]);
+    }
+
+    failrate.sort((a,b)=>{
+        if(a[1]-b[1] > 0) return -1;
+        if(a[1]-b[1] < 0) return 1;
+        return 0;
+    });
+
+    const result = failrate.map((stage)=> {
+        return stage[0];
+    });
+    
+    return result;
+}
