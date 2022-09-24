@@ -1,0 +1,20 @@
+/**
+ * 최대공약수와 최소공배수를 구하는 단순한 문제다.
+ * 
+ * 유클리드의 호제법을 변형하여 나눗셈을 사용하면 연산량을 줄일 수 있다.
+ */
+
+
+ function solution(n, m) {
+    const GCD = getGCD(n, m);
+    const LCM = n*m / GCD;
+
+    return [GCD, LCM]
+}
+
+function getGCD(A, B) {
+    while (A%B !== 0) {
+        [A, B] = [B%A, A];
+    }
+    return B;
+}
