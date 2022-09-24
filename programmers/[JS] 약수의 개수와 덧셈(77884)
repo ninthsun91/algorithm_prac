@@ -1,0 +1,30 @@
+/**
+ * 1과 자신을 포함하는 약수를 담는 Set devisior를 만들고,
+ * 2부터 약수를 구하는 수의 1/2까지의 수로 나누어보며 약수를 구했다.
+ * 
+ * 이후 스위치문으로 약수의 개수에 따른 연산 처리를 했다.
+ */
+
+
+function solution(left, right) {
+    let sum = 0;
+    for(i=left; i<=right; i++) {
+        const devisor = new Set([1, i]);
+        for(j=2; j<=i/2; j++) {
+            if( i%j === 0 ) {
+                devisor.add(j);
+            }
+        }
+        
+        switch ( devisor.size%2 ) {
+            case 0:
+                sum += i;
+                break;
+            case 1:
+                sum -= i;
+                break;
+        }
+    }
+
+    return sum;
+}
