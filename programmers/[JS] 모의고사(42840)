@@ -1,0 +1,96 @@
+/**
+* OMR 카드를 연상하여 수포자 3명의 정답 패턴 sheet를 만들고
+* 여기에 정답 sheet를 빼면 정답을 맞춘 문제들은 0이 될 것이라 생각했다.
+*
+* 다만, 이후 가장 높은 점수를 받은 사람을 구하고 정렬하는 부분에서 적절한 방법을 찾지 못해
+* [사람, 점수] 키밸류로 새로운 리스트를 만들고
+* 이를 점수 순으로 정렬한 이후 다시 결과를 뽑았다.
+*/
+
+
+function solution(answers) {
+    const N = answers.length;
+
+    const a = Math.ceil(N / 5);
+    const sheet1 = "12345".repeat(a).split("").map(Number).slice(0,N);
+    const b = Math.ceil(N / 8);
+    const sheet2 = "21232425".repeat(b).split("").map(Number).slice(0,N);
+    const c = Math.ceil(N / 10);
+    const sheet3 = "3311224455".repeat(c).split("").map(Number).slice(0,N);
+
+    answers.forEach( (answer, i) => {
+        sheet1[i] -= answer;
+        sheet2[i] -= answer;
+        sheet3[i] -= answer;
+    });
+
+    const scores = [
+        [1, sheet1.filter((el)=>el===0).length],
+        [2, sheet2.filter((el)=>el===0).length],
+        [3, sheet3.filter((el)=>el===0).length],
+    ]
+
+    scores.sort((a,b) => {
+        if (a[1]-b[1]>0) {
+            return -1;
+        }
+        if (a[1]-b[1]<0) {
+            return 1;
+        }
+        return 0;
+    });
+    const highScore = scores[0][1];
+    const result = scores.map((score)=>{
+        if (score[1] === highScore)
+            return score[0];
+    }).filter((el)=>el !== undefined);
+
+    switch (result.length) {
+        case 1:
+            return result;
+        default:
+            return result.sort((a,b)=>a-b);
+    }
+}
+
+
+
+
+
+
+/**
+* 가장 높은 사람을 뽑아내는 부분이 너무 비효율적이라 다른 풀이들을 추가로 참고 했다.
+* 
+* 그 중에서 간결하고 실행효율이 높아 보이는 코드를 찾았는데,
+* 세 사람의 점수를 담은 점수판을 만들어,
+* 그저 앞에서부터 차례대로 가장 높은 점수인지만을 확인하면 자연스럽게 오름차순이 되었다.
+*
+* 본래 코드에서 두 가지를 바꿨다.
+* for문보다 forEach문이 간결하여 선호하기에 바꿨는데,
+* 생각해보니 실행효율에서 차이가 있을 수도 있겠다는 생각이 들었다.
+* 그리고 비록 3개뿐이긴하지만, Math.max()에 개별 원소를 넣었던걸 전개 연산자로 처리했다.
+*/
+
+
+function solution(answers) {
+    let answer = [];
+
+    const man1 = [1,2,3,4,5];
+    const man2 = [2,1,2,3,2,4,2,5];
+    const man3 = [3,3,1,1,2,2,4,4,5,5];
+    const counts = [0, 0, 0];
+
+    answers.forEach( (answer, i) => {
+        if(answer == man1[i % 5]) counts[0]++;
+        if(answer == man2[i % 8]) counts[1]++;
+        if(answer == man3[i % 10]) counts[2]++;
+    })
+
+    const max = Math.max(...counts);
+    counts.forEach((count, i)=>{
+        if(count === max) answer.push(i+1)
+    });
+
+    return answer;
+}
+
