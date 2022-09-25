@@ -1,0 +1,70 @@
+/**
+ * 
+ * 단순하게 1부터 n 사이의 소수의 개수를 찾는 문제다.
+ * 에라토스테네스의 체로 n 이하의 소수를 구하고 크기를 구하면된다.
+ * 
+ */
+
+
+
+
+// function solution(n) {
+//     const max_sqrt = Math.ceil(Math.sqrt(n));
+//     const primeSet = new Set(Array.from({length: n-1}, (_, i)=>i+2));
+//     for(i=2; i<=max_sqrt; i++) {
+//         for(j=2; i*j<=n; j++) {
+//             primeSet.delete(i*j);
+//         }
+//     }
+
+//     return primeSet.size;
+// }
+
+
+
+
+/**
+ * 
+ * 그러나 시간초과가 발생했다.
+ * 입력 최댓값인 1000000을 넣었을 때도 0.4초대밖에 안걸리는,
+ * 백준에서는 시간으로 문제가 된 적이 없었는데 여기서는 더 높은 실행효율을 요구하고 있다.
+ * 
+ * 첫 for문의 i를 콘솔에 찍어보니 2부터 범위 내 모든 자연수를 일일히 확인하고 있었다.
+ * 만약 n이 100이라면, 실제로는 2,3,5,7 네 수의 배수만 확인하면 된다.
+ * 하지만 2~10까지 2배가 넘는 연산을 하고 있었기 때문에 이를 먼저 줄여보기로 했다.
+ * 
+ * 예를들어, for문을 아래처럼 내가 구한 소수를 사용하도록 고쳤다.
+ * 
+ * for(i=0; [...primeSet][i]<=max_sqrt; i++) {
+ *     const prime = [...primeSet][i];
+ *     for(j=2; prime*j<=n; j++) {
+ *         primeSet.delete(prime*j);
+ *     }
+ * }
+ * 
+ * 반복하는 횟수는 줄어들었지만, 반복문 안에서 리스트를 반복적으로 참조하며 연산 속도는 오히려 느려졌다.
+ * 오래 고민해봤지만, 수작업으로 소수 필드를 만드는거 외에는 더 나은 방법이 보이지 않았다.
+ * 
+ * 
+ * 두번째로 착안한 방법은 짝수를 배제하는 것이었다.
+ * 어차피 2를 제외한 모든 짝수는 소수가 될 수 없다.
+ * 따라서, 처음 Set를 만들 때 딱 홀수만으로 이루어진 리스트를 만들고 2만 추가하면 됐다.
+ * 그리고 반복문에서도 홀수의 배수만 확인하도록 하면 됐다.
+ * 
+ * 결과적으로 0.2초 이내로 반 이상 실행효율을 단축시킬 수 있었고 이번에는 통과했다.
+ * 
+ */
+
+
+function solution(n) {
+    const max_sqrt = Math.ceil(Math.sqrt(n));
+    const primeSet = new Set(Array.from({length: Math.ceil(n/2)-1}, (_, i)=>2*(i+1)+1));
+    primeSet.add(2);
+
+    for(i=1; i<=max_sqrt/2; i++) {
+        for(j=1; (2*i+1)*(2*j+1)<=n; j++) {
+            primeSet.delete((2*i+1)*(2*j+1));
+        }
+    }
+    return primeSet.size;
+}
