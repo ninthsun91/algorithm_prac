@@ -1,0 +1,59 @@
+/**
+ * 3번의 기회. 0~10점
+ * S>**1  / D>**2 / T>**3
+ * *>(score[i]+score[i-1])*2 / #> -
+ * 
+ * 
+ * 1. 문자열을 각 시행별로 끊기 > regex > /\d{1,2}/
+ * 2. 각 시행별 점수 계산
+ *      (1) 옵션 X, (2) 옵션 "#", (3) 옵션 "*"
+ * 3. 합산
+ */
+
+ function solution(dartResult) {
+    const re = /\d{1,2}/g
+    const indexes = [...dartResult.matchAll(re)].map((match)=>match.index)
+    const darts = [];
+    for(i=0; i<3; i++) {
+        darts.push(dartResult.slice(indexes[i], indexes[i+1]));
+    }
+
+    const scores = [];
+    darts.forEach((dart, i)=>{
+        let score = 0;
+        let multiple = 0;
+        let option = "";
+        const multipleTable = {
+            "S": 1,
+            "D": 2,
+            "T": 3,
+        }
+
+        if (parseInt(dart)/10 == 1) {
+            score = Number(dart.slice(0,2));
+            multiple = multipleTable[dart.slice(2,3)];
+            option = dart.slice(3,4);
+        } else {
+            score = Number(dart.slice(0,1));
+            multiple = multipleTable[dart.slice(1,2)];
+            option = dart.slice(2,3);
+        }
+
+        switch (option.length) {
+            case 0:
+                scores.push(score**multiple);
+                break;
+            case 1:
+                if (option === "#") {
+                    scores.push((score**multiple)*(-1));
+                    break;
+                }
+                if (scores[i-1]) scores.push( scores.pop()*2 )
+                scores.push((score**multiple)*2);
+                break;
+        }
+
+    });
+
+    return scores.reduce((a,b)=>a+b);
+}
