@@ -1,0 +1,28 @@
+/**
+ * 
+ * 1~n까지 반복
+ * recursiveF(i, n)
+ *      if n<0
+ *          return 0
+ *      if n>0
+ *          return recursiveF(i+1, n-i)
+ *      if n===0
+ *          return 1
+ * 
+ */
+
+
+function solution(n) {
+    let count = 0;
+    for(i=1; i<=n; i++) {
+        count += consecutiveSum(i, n);
+    }
+
+    return count;    
+}
+
+function consecutiveSum(i, n) {
+    if (n<0) return 0;
+    if (n>0) return consecutiveSum(i+1, n-i);
+    if (n===0) return 1;
+}
