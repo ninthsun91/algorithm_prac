@@ -1,0 +1,43 @@
+/**
+ *  
+ * board > NxN 정사각형. 숫자>인형의 종류
+ * moves > 1~N. 숫자>board 가로 위치
+ * 
+ * 보드를 가로 위치에 따라 인형스택을 재정리
+ * 
+ * 출구스택을 나타내는 새 배열 out
+ * 1. move에 인형이 있는지 확인
+ * 2. dollStack.pop !== out[length]
+ * 3. then, out.push
+ * 
+ */
+
+
+function solution(board, moves) {
+    const N = board.length;
+    board.reverse();
+
+    const dollStack = Array.from({length: N}, ()=>[]);
+    board.forEach( (row) => {
+        row.forEach( (doll,i) => {
+            if(doll !== 0) dollStack[i].push(doll);
+        });
+    });
+
+    const out = [];
+    let count = 0;
+    moves.forEach( (move) => {
+        if (dollStack[move-1].length !== 0) {
+            const doll = dollStack[move-1].pop();
+            
+            if (doll !== out[out.length-1]) {
+                out.push(doll);
+            } else {
+                count += 2;
+                out.pop();
+            }
+        }
+    });
+
+    return count;
+}
