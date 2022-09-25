@@ -1,0 +1,38 @@
+/** 
+ * n x n 길이의 0으로 초기화된 배열(전체지도)
+ * 두 지도를 이진법의 n X n 배열로 바꾸고 각 인덱스를 전체지도에 더함
+ * 
+ * 0은 " "로, 1이나 2는 "#"로 바꾸고, 앞에서부터 n개만큼 짤라서 반환
+ */
+
+
+function solution(n, arr1, arr2) {
+    const map = Array.from({length: n*n}, ()=>0);
+    arr1.forEach( (dec,i) => {
+        toBinary(n, dec).split("").forEach((bin,j)=>{
+            map[n*i+j] += Number(bin)
+        });
+    });
+    arr2.forEach( (dec,i) => {
+        toBinary(n, dec).split("").forEach((bin,j)=>{
+            map[n*i+j] += Number(bin)
+        });
+    });
+
+    const re1 = /[0]/g;
+    const re2 = /[12]/g;
+    let decoded = map.join("").replace(re1, " ").replace(re2, "#");
+
+    const result = [];
+    while(decoded.length !== 0) {
+        result.push(decoded.slice(0, n));
+        decoded = decoded.slice(n, decoded.length);
+    }
+
+    return result;
+}
+
+function toBinary(n, num) {
+    const bin = num.toString(2);
+    return "0".repeat(n).substring(bin.length) + bin;
+}
