@@ -1,0 +1,59 @@
+/**
+ * 
+ * 두 수의 관계가 배수 혹은 약수 관계에 있는지 확인하는 문제다.
+ * 하나의 수를 다른 하나로 나누었을 때 나누어 떨어지는지 확인하고,
+ * 두번의 경우 다 나누어 떨어지지 않는다면 배수도 약수도 아닌 숫자다.
+ * 
+ */
+ 
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (line.split(" ").map(Number).reduce((A,B)=>A+B, 0) === 0) {
+        input.pop();
+        rl.close();
+    }
+});
+
+rl.on("close", ()=>{
+    
+    input.forEach( (line) => {
+        const [A, B] = line.split(" ").map(Number);
+        
+        if (A%B === 0) console.log("multiple");
+        else if (B%A === 0) console.log("factor");
+        else console.log ("neither");
+    });
+});
+
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+result = ""
+while(True):
+    A, B = map(int, input().split())    
+    if A+B==0:
+        break
+    elif A%B==0:
+        result += "multiple\n"
+    elif B%A==0:
+        result += "factor\n"
+    else:
+        result += "neither\n"
+print(result)
