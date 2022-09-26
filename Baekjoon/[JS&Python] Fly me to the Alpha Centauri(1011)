@@ -1,0 +1,103 @@
+/**
+ * 
+ * distance = y - x
+ * 
+ * distance 별로 필요한 최소 이동 횟수를 전개하였을 때
+ * 1 2 3 3 4 4 5 5 5 6 6 6 7 7 7 7 8 8 8 8
+ * 처럼 distance가 n**2일 때를 기준으로 일정한 패턴의 반복을 발견했다.
+ * 
+ * 제곱수간의 차이는 1~4: 1+2 / 4~9: 2+3 / 9~16: 3+4 / 16~25: 4+5
+ * 이렇게 나타낼 수 있는데,
+ * 임의 수의 제곱근의 정수 부분을 n이라 하였을 때, 2*n , 2*n-1 로 최소거리를 나타낼 수 있었다.
+ * 
+ */
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length-1 == input[0]) rl.close();
+});
+
+rl.on("close", ()=>{
+    const T = Number(input[0]);
+    let result = "";
+
+    for(let i=1; i<=T; i++) {
+        const [x, y] = input[i].split(" ").map(Number);
+        const distance = Math.sqrt(y - x);
+
+        switch (distance%1) {
+            case 0:
+                result += (distance*2-1) + "\n";
+                break;
+            default:
+                if (2*(distance%1) < 1) {
+                    result += Math.round(distance)*2 + "\n";
+                } else {
+                    result += (Math.round(distance)*2)-1 + "\n";
+                }
+                break;
+        }        
+    }
+    console.log(result)
+});
+
+
+
+/**
+ * 
+ * 풀고나서 다시 확인해보니 최소 이동횟수는 (거리 제곱근)*2의 정수부분과 같았다.
+ * 따라서, 아래처럼 조금 더 간결하게 쓸 수 있다.
+ * 
+ */
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length-1 == input[0]) rl.close();
+});
+
+rl.on("close", ()=>{
+    input.shift();
+
+    for(line of input) {
+        const [x,y] = line.split(" ")
+        const distance = Math.sqrt(y-x) * 2
+
+        const result = distance%1 ? Math.floor(distance) : distance-1;
+        console.log(result);
+    }
+});
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+import sys, math
+input = sys.stdin.readline
+
+T = int(input())
+
+result = []
+for i in range(T):
+    x, y = map(int, input().split())
+    distance = ((y-x)**0.5)*2
+    
+    result.append(int(math.floor(distance) if distance%1 > 0 else distance-1))
+
+print("\n".join(map(str, result)))
