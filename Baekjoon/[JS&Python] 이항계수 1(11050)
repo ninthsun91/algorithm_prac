@@ -1,0 +1,42 @@
+/**
+ * 
+ * 이항계수, 곧 N C K 를 구하는 문제다.
+ * N! / (K! * (N-k)!)
+ * 
+ */
+ 
+ 
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on("line", (line)=>{
+    const [N, K] = line.split(" ").map(Number);
+
+    const result = factorial(N) / ( factorial(K) * (factorial(N-K)) );
+    console.log(result);
+
+    rl.close();
+});
+
+function factorial(N) {
+    return N > 1 ? N * factorial(N-1) : 1;
+}
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N, K = map(int, input().split())
+
+def factorial(N):
+    return N * factorial(N-1) if N>1 else 1
+
+result = int(factorial(N) / ( factorial(K) * factorial(N-K) ))
+print(result) 
