@@ -1,0 +1,43 @@
+
+
+/**
+ * 
+ * 1과 자신을 제외한 약수의 수와 약수들이 주어진다.
+ * 즉, 1과 자신 밖에 없는 소수는 제외되고,
+ * 소수의 제곱인 수는 오로지 제곱근인 소수 하나만을 가지고,
+ * 나머지 숫자들은 약수 리스트를 크기순으로 정렬하고 처음과 끝을 곱하면 될 것이다.
+ * 
+ */
+ 
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+});
+
+rl.on("close", ()=>{
+    const N = Number(input[0]);
+    const factors = input[1].split(" ").map(Number).sort((a,b)=>a-b);
+
+    console.log(factors[0]*factors[N-1]);
+});
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+factors = list(map(int, input().split()))
+factors.sort()
+
+print(factors[0]*factors[N-1])
