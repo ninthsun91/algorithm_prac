@@ -1,0 +1,70 @@
+/**
+ * 
+ * 문자열 s > 공백으로 구분된 숫자
+ * 소수 최대값과, 소수가 아닌 수 최소값
+ * 
+ * "(min_not_prime) (max_prime)" 
+ * 
+ * !! s에는 둘 이상의 정수가 공백으로 구분
+ * !! 소수가 한개 이상 섞여있으며, 음수는 없음
+ * 
+ * 
+ * 1. 배열 정렬(오름차순)
+ * 2. 배열 최대값까지의 소수셋 primeSet
+ * 3. 최대값은 역순으로 참조하며 primeSet에 있는지 확인
+ * 4. 최소값은 정순으로 참조하며 primeSet에 없는지 확인
+ * 5. 출력
+ * 
+ */
+
+const s = "97 75 88 99 95 92 73";
+// console.log(solution(createString(10)))
+
+function solution(s) {
+    const nums = s.split(" ").map(Number).sort((a,b)=>a-b);
+    const length = nums.length;
+    const primeSet = getPrimes(nums[length-1]);
+
+    let maxPrime = "";
+    for(let i=0; i<length; i++) {
+        if (primeSet.has(nums[length-1-i])) {
+            maxPrime = nums[length-1-i];
+            break;
+        }
+    }
+    let minNotPrime = "";
+    for(let i=0; i<length; i++) {
+        if (!primeSet.has(nums[i])) {
+            minNotPrime = nums[i];
+            break;
+        }
+    }
+    
+    return `${minNotPrime} ${maxPrime}`;
+}
+
+function getPrimes(n) {
+    const max_sqrt = Math.ceil(Math.sqrt(n));
+    const primeSet = new Set(Array.from({length: Math.ceil(n/2)-1}, (_, i)=>2*(i+1)+1));
+    primeSet.add(2);
+
+    for(i=1; i<=max_sqrt/2; i++) {
+        for(j=1; (2*i+1)*(2*j+1)<=n; j++) {
+            primeSet.delete((2*i+1)*(2*j+1));
+        }
+    }
+    return primeSet;
+}
+
+
+function createString(n) {
+    const nums = [];
+    while (nums.length < n) {
+        const digits = ((Math.random()*3)|0) +1;
+        const number = Math.random()*(10**digits)|0;
+        console.log(digits, number)
+        if (number !== 0) nums.push(number);
+    }
+    
+    return nums.join(" ");
+}
