@@ -1,0 +1,8 @@
+
+
+function getGCD(A, B) {
+    while(B%A !== 0) {
+        [A, B] = [B%A, A];
+    }
+    return A;
+}
