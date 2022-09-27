@@ -1,0 +1,38 @@
+
+
+
+function getPrimes(N) {
+    const primeSet = new Set([2]);
+    for (let i=3; i<=N; i+=2) {
+        primeSet.add(i);
+    }
+
+    const maxSqrt = Math.ceil(N**0.5);
+    for (let i=3; i<=maxSqrt; i+=2) {
+        for (let j=3; i*j<=N; j+=2) {
+            primeSet.delete( i*j );
+        }
+    }
+    
+    return primeSet;
+}
+
+
+
+def get_primes(n):
+    prime_set = set([2])
+    i = 3
+    while i<=n:
+        prime_set.add(i)
+        i+=2
+    
+    max_sqrt = int(n**0.5)+1
+    i = 3
+    while i <= max_sqrt:
+        j = 3
+        while i*j <= n:
+            prime_set.discard(i*j)
+            j+=2
+        i+= 2
+
+    return prime_set
