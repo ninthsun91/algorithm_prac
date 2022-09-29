@@ -1,0 +1,87 @@
+/**
+ * 
+ * 앞의 문제에서 사용했던 재귀 함수를 다시 사용하면 된다.
+ * 하지만, 예시 입력처럼 1 45000 처럼 두 수의 차이가 큰 경우가 생기면 연산이 너무 길어진다.
+ * 따라서, 두 수가 나누어떨어지는 관계에 있으면, 한 수가 두 수의 최소 공배수이기 때문에 이를 먼저 걸러준다.
+ * 
+ */
+
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+});
+
+rl.on("close", ()=>{
+    const T = Number(input[0]);
+
+    result = "";
+    for (i=1; i<T+1; i++) {
+        const [A, B] = input[i].split(" ").map(Number);
+        
+        if (A%B === 0) result += A + "\n";
+        else if (B%A === 0) result += B + "\n";
+        else {
+            const GCD = getGCD(A, B);
+            const LCM = A*B / GCD;
+
+            result += LCM + "\n";
+        }
+    }
+    console.log(result);
+});
+
+function getGCD(A, B) {
+    if (A === 0) {
+        return B;
+    }
+    else if (A>=B) {
+        return getGCD(A%B, B);
+    }
+    else if (A<B) {
+        return getGCD(B, A);
+    }
+}
+
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+def main():
+    T = int(input())
+
+    result = []
+    for i in range(T):
+        A, B = map(int, input().split())
+        
+        if (A%B == 0):
+            result.append(A)
+        elif (B%A == 0):
+            result.append(B)
+        else:
+            GCD = getGCD(A, B)
+            LCM = A*B / GCD
+            result.append(int(LCM))
+    print("\n".join(map(str, result)))
+
+def getGCD(A, B):
+    if A==0:
+        return B
+    elif A>=B:
+        return getGCD(A%B, B)
+    elif A<B:
+        return getGCD(B, A)
+
+main()
