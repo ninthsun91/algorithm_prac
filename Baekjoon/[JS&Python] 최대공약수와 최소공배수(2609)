@@ -1,0 +1,60 @@
+/**
+ * 
+ * 유클리드의 알고리즘을 사용해야한다.
+ * 하지만 유클리드의 알고리즘은 A-B 연산을 A%B로 대체할 수 있고 연산횟수도 줄어든다.
+ * 
+ */
+
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on("line", (line)=>{
+    const [A, B] = line.split(" ").map(Number);
+
+    const GCD = getGCD(A, B);
+    const LCM = A*B / GCD;
+    console.log(GCD+"\n"+LCM);
+
+    rl.close();
+});
+
+
+function getGCD(A, B) {
+    if (A === 0) {
+        return B;
+    }
+    else if (A>=B) {
+        return getGCD(A%B, B);
+    }
+    else if (A<B) {
+        return getGCD(B, A);
+    }
+}
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+def main():
+    A, B = map(int, input().split())
+    GCD = getGCD(A, B)
+    LCM = int(A*B / GCD)
+    
+    print(GCD)
+    print(LCM)
+
+def getGCD(A, B):
+    if A==0:
+        return B
+    elif A>=B:
+        return getGCD(A%B, B)
+    elif A<B:
+        return getGCD(B, A)
+
+main()
