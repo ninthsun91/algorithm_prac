@@ -1,0 +1,115 @@
+/**
+ * 
+ * N (1~1000), 
+ * K (0~K~N)
+ * 
+ * 숫자 범위가 크기 때문에 정수 범위에서는 n! infinity가 나옴
+ * Bigint?
+ * 
+ */
+ 
+ 
+// const rl = require("readline").createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// rl.on("line", (line)=>{
+//     const [N, K] = line.split(" ").map((a)=>{
+//         return BigInt(a);
+//     })
+
+//     const C = factorial(N) / (factorial(K) * factorial(N-K));
+
+//     console.log(parseInt(C%10007n));
+
+//     rl.close();
+// });
+
+
+// function factorial(n) {
+//     return n > 1n ? n * factorial(n-1n) : 1n;
+// }
+
+
+
+/**
+ * 
+ * VSCode상에서는 되기는 하는데 백준 상에서는 런타임 에러(Reference Error)
+ * 아마 BigInt를 좋아하지 않는 것으로 보임
+ * 
+ * 그렇다면....
+ * %10007을 이항계수 결과에 하는 것이 아닌, n! 계산 단계에서 미리미리 한다면?
+ * 
+ * 1! => 1/10007로 깔아두고 계산
+ * but,
+ * 이거도 입력값 범위 안에서는 infinity가 나온다.
+ * 
+ * 
+ * 찾아보니 DP(Dynamic Programming)을 이용하여 memoization을 해야 풀 수 있는 문제다.
+ * 
+ * C[n][r] = C[n-1][r] + C[n-1][r-1]
+ * 
+ * 결과를 출력할 때 r=0이거나, r=n일 때 1이 잘 나오는지 주의!!
+ * 
+ */
+
+
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const [N, K] = line.split(" ").map(Number);
+    if (K===0 || N===K) {
+        console.log(1);
+    } else {
+        const C = [[1], [1, 1]];
+        for(let i=2; i<N; i++) {
+            C.push([]);
+            for(let j=0; j<=i; j++) {
+                if (j === 0 || j === i) {
+                    C[i].push(1);
+                    continue;
+                }
+                C[i][j] = ((C[i-1][j-1] + C[i-1][j])%10007);
+            }
+        }
+
+        console.log( (C[N-1][K] + C[N-1][K-1])%10007);
+    }    
+
+    rl.close();
+});
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+def main():
+    N, K = map(int, input().split())
+
+    if K==0 or N==K:
+        print(1)
+        return
+
+    C = []
+    for i in range(N):
+        C.append([])
+        for j in range(i+1):
+            if j==0 or j==i:
+                C[i].append(1)
+                continue
+            C[i].append( (C[i-1][j-1] + C[i-1][j])%10007 )
+
+    print( (C[N-1][K-1]+C[N-1][K])%10007 )
+        
+main()
