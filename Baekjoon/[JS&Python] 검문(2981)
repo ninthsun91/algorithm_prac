@@ -1,0 +1,93 @@
+/**
+ * 
+ * N개의 수..
+ * 2~10억
+ * M은 2이상
+ * 
+ * A, B, C, D ....
+ * ax+R, bx+R, cx+R, dx+R
+ * 
+ * B-A = (b-a)x
+ * C-B = (c-b)x
+ * D-C = (d-c)x
+ *          >>> GCDs?
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length-1 == input[0]) rl.close();
+});
+
+rl.on("close", ()=>{
+    const N = Number(input.shift());
+
+    let GCD = 0;
+    for(let i=0; i<N-1; i++) {
+       GCD = getGCD(Math.abs(input[i+1]-input[i]), GCD);
+    }
+    
+    const divisors = [];
+    for(i=2; i<=GCD; i++) {
+        if (GCD%i === 0) divisors.push(i);
+    }
+    console.log(divisors.join(" "));
+});
+
+function getGCD(A, B) {
+    while( B%A !== 0 ) {
+        [A, B] = [B%A, A];
+    }
+    return A;
+}
+
+
+/**
+ * 
+ * python에서는 시간초과가 났다.
+ * 약수를 구하는 과정을 1부터 GCD까지 다 구하는 것이 아닌,
+ * GCD의 제곱근까지만 구하도록 했다. 
+ * 
+ */
+ 
+ 
+ import sys
+input = sys.stdin.readline
+
+def main():
+    N = int(input())
+    nums = []
+    for i in range(N):
+        nums.append(int(input()))
+    
+    GCD = 0
+    for i in range(N-1):
+        GCD = getGCD(abs(nums[i+1]-nums[i]), GCD)
+
+    divisors = set([GCD])
+    for i in range(2, int(GCD**0.5)+1):
+        if GCD%i == 0:
+            divisors.add(i)
+            divisors.add(GCD//i)
+    
+    divisors = list(divisors)
+    divisors.sort()
+    print(*divisors)
+
+def getGCD(A, B):
+    while B%A != 0:
+        [A, B] = [B%A, A]
+    return A
+
+main()
+
+
+
