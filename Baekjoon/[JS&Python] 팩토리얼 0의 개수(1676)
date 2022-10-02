@@ -1,0 +1,47 @@
+/**
+ * 
+ * 언뜻 팩토리얼을 구하는 문제로 보이지만,
+ * 입력값이 너무 커서 정상적으로 팩토리얼의 결과를 처리하기가 힘들다.
+ * 
+ * 끝자리가 0이라는 것은, 10의 배수라는 뜻.
+ * 5*2
+ * 짝수는 무수히 많이 주어질 것이므로, N을 소인수분해하였을 때 5의 지수를 구하는 문제다.
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on("line", (N)=>{
+    let result = 0;
+    for (let i=5; i<=N; i+=5) {
+        if (i%125 === 0) result+=3;
+        else if (i%25 === 0) result+=2;
+        else result++;
+    }
+
+    console.log(result)
+
+    rl.close();
+});
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+
+sum = 0
+for i in range(1, N//5+1):
+    if (5*i)%125 == 0:
+        sum+=3
+    elif (5*i)%25 == 0:
+        sum+=2
+    else:
+        sum+=1
+print(sum)
