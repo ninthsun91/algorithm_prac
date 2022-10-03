@@ -1,0 +1,85 @@
+/**
+ * 
+ * T: test cases number (1~100)
+ * n: 의상의 수 (0~30)
+ * (name) (category) (no name dup)
+ * 
+ * 조합이긴한데...nCr 같은 형태는 아님. r이 없음
+ * 
+ * 2번 케이스 > 서로다른 face 3개. > 1 1 1이니까 3
+ * 1번 케이스 > headgear 2개, eyewear 1개 > ? > 5
+ *  [1] [1,2] > 0,1 0,2 1,0 1,1 1,2 > 5
+ * 
+ * 그럼 옷을 먼저 분류별로 배열에 따로 담고...
+ * 각각의 배열의 (nC1+nC0)의 곱에서 아무것도 안입는 경우를 뺀다면
+ * 3C0 + 3C1 -1 > 3
+ * 1C0+1C1 * 2C0+2C1 -1 > 2*3 -1 > 5
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+});
+
+rl.on("close", ()=>{
+    const T = Number(input.shift());
+
+    const result = [];
+    for (let t=0; t<T; t++) {
+        const N = Number(input.shift());
+
+        const clothMap = new Map();
+        for (let i=0; i<N; i++) {
+            const [name, category] = input.shift().split(" ");
+
+            if (clothMap.has(category)) {
+                clothMap.get(category).push(name);
+                continue;
+            }
+            clothMap.set(category, [name]);
+        }
+
+        let sum = 1;
+        for (const n of clothMap.values()) {
+            sum = sum * (n.length+1);
+        }
+        console.log(sum-1);
+    }
+});
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+T = int(input())
+result = ""
+
+for t in range(T):
+    N = int(input())
+
+    closet = {}
+    for n in range(N):
+        name, category = input().split()
+        
+        if category in closet:
+            closet[category].append(name)
+            continue
+        closet[category] = [name]
+
+    cloth = closet.values()
+    sum = 1
+    for c in cloth:
+        sum = sum * (len(c)+1)
+
+    result = result + str(sum-1)+"\n"
+
+print(result)
