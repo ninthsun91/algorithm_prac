@@ -1,0 +1,89 @@
+/**
+ * 
+ * nCm 끝자리 0의 개수
+ * 
+ * 0~m~n~2,000,000,000 (n!=0)
+ * 
+ * 
+ * memoization으로 n까지의 조합 계산을 해야하나?
+ * js max int 9,007,199,254,740,991
+ * 역시 최대입력값에서는 메모리를 초과한다.
+ * 
+ * nCr = n! / (r! * (n-r)!)
+ * 앞선 문제에서 팩토리얼의 0의 갯수를 구했었기 때문에,
+ * (n!의 0) - (r!의 0 + (n-r)!의 0) 이 아마도 nCr의 0의 개수일 것이다.
+ * 
+ * 왜why? 어차피 5는 안남음...5가 생기면 생기는 2와 만나서 10이 될 것이기 때문에
+ * 분모에서 r!과 (n-r)! 각각의 0의 개수를 구한 이후, 지수가 남아서 추가로 10이 될 것을 걱정할 필요가 없다.
+ * ㄱㄱ
+ * 
+ * 5^n의 배수에서 n씩 5의 지수가 증가한다.
+ * 
+ * 틀렸다... 5C4에서 분모에 2가 남고 아마 이런 경우가 더 있을것이다.
+ * 고로, 5의 지수와 2의 지수를 각 구해서 다시 짜보자. * 
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    const twos = getTwo(N) - ( getTwo(M) + (getTwo(N-M)) );
+    const fives = getFive(N) - ( getFive(M) + (getFive(N-M)) );
+    console.log(Math.min(twos, fives), twos, fives);
+
+    rl.close();
+});
+
+function getFive(N) {
+    let sum = 0;
+    let i = 5;
+    do {
+        const R = (N/i)|0;
+        if (R<1) break;
+        sum = sum + R;
+        i = i*5;
+    } while (true);
+    return sum;
+}
+
+function getTwo(N) {
+    let sum = 0;
+    let i = 2;
+    do {
+        const R = (N/i)|0;
+        if (R<1) break;
+        sum = sum + R;
+        i = i*2;
+    } while (true);
+    return sum;
+}
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+
+def get_indice(n, i):
+    sum = 0
+    I = i
+    while n/I >= 1:
+        sum += n//I
+        I *= i
+    return sum
+
+twos = get_indice(N, 2) - ( get_indice(M, 2) + get_indice(N-M, 2) )
+fives = get_indice(N, 5) - ( get_indice(M, 5) + get_indice(N-M, 5) )
+
+print(min(twos, fives))
