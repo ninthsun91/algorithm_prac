@@ -1,0 +1,63 @@
+/**
+ * 
+ * 백트랙킹?
+ * 
+ * readline 콜백 안에 또 함수를 선언하기 지저분하니까 클로저를 써보자.
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    ouput: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    const seq = backtrack(N, M);
+    seq();
+
+    rl.close();
+});
+
+function backtrack(N, M) {
+    const sequence = [];
+
+    return function closure() {
+        if (sequence.length === M) {
+            console.log(sequence.join(" "));
+            return;
+        }
+    
+        for (let i=1; i<=N; i++) {
+            if (!sequence.includes(i)) {
+                sequence.push(i);
+                closure();
+                sequence.pop();
+            }
+        }
+    }
+}
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+n,m = list(map(int, input().split()))
+ 
+seq = []
+ 
+def backtrack():
+    if len(seq)==m:
+        print(" ".join(map(str, seq)))
+        return
+    
+    for i in range(1, n+1):
+        if i not in seq:
+            seq.append(i)
+            backtrack()
+            seq.pop()
+ 
+backtrack()
