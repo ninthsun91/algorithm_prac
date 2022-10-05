@@ -1,0 +1,115 @@
+/**
+ * 
+ * 앞선 문제와 동일한 백트래킹 문제다.
+ * 하지만, 결과를 오름차순으로 정렬하여 출력하여야 한다.
+ * 즉, 이번에는 순서가 상관이 있다...!
+ * 
+ * n+1-m만큼 반복
+ * 4 2 > 1,2,3 3번
+ * 5 2 > 1,2,3,4 4번
+ * 5 3 > 1,2,3 3번
+ * 
+ * 배열에 푸쉬하는 i를 마지막으로 배열에 들어간 값에 +1을 해서 비교하면 될 것 같다.
+ * 
+ */
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    ouput: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    const seq = backtrack(N, M);
+    seq();
+
+    rl.close();
+});
+
+function backtrack(N, M) {
+    const sequence = [0];
+
+    return function closure() {
+        if (sequence.length === M+1) {
+            console.log(sequence.slice(1,M+1).join(" "));
+            return;
+        }
+    
+        for (let i=sequence[sequence.length-1]; i<=N; i++) {
+            if (!sequence.includes(i)) {
+                sequence.push(i);
+                closure();
+                sequence.pop();
+            }
+        }
+    }
+}
+ 
+ 
+/**
+ * 
+ * 다른 풀이들을 보니, 그냥 단순하게 재귀함수의 매개변수로 현재 인덱스를 넘겨주면 보다 간단하게 해결할 수 있는 문제였다.
+ * 
+ */
+ 
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    ouput: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    const seq = backtrack(N, M);
+    seq(1);
+
+    rl.close();
+});
+
+function backtrack(N, M) {
+    const sequence = [];
+
+    return function closure(I) {
+        if (sequence.length === M) {
+            console.log(sequence.join(" "));
+            return;
+        }
+    
+        for (let i=I; i<=N; i++) {
+            if (!sequence.includes(i)) {
+                sequence.push(i);
+                closure(i);
+                sequence.pop();
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+n,m = list(map(int, input().split()))
+ 
+seq = []
+ 
+def backtrack(I):
+    if len(seq)==m:
+        print(" ".join(map(str, seq)))
+        return
+    
+    for i in range(I, n+1):
+        if i not in seq:
+            seq.append(i)
+            backtrack(i)
+            seq.pop()
+ 
+backtrack(1)
