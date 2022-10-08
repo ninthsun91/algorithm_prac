@@ -1,0 +1,66 @@
+/**
+ * 
+ * 1부터 N까지, M개의 수열
+ * 중복 가능
+ * 1~M~N~7
+ * 비내림차순
+ * 
+ * 푸쉬하는 i가 앞서 들어간 수보다 작으면 다음 루프로
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    function backtrack() {
+        const l = sequence.length;
+        if (l === M) {
+            result += sequence.join(" ") + "\n";
+            return;
+        }
+
+        for (let i=1; i<=N; i++) {
+            if (l !== 0 && sequence[l-1]>i) continue;
+            sequence.push(i);
+            backtrack();
+            sequence.pop();
+        }
+    }
+
+    const sequence = [];
+    let result = "";
+    backtrack();
+    console.log(result);
+
+    rl.close();
+});
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+n,m = list(map(int, input().split()))
+ 
+seq = []
+def backtrack():
+    l = len(seq)
+    if l==m:
+        print(" ".join(map(str, seq)))
+        return
+    
+    for i in range(1, n+1):
+        if (l!=0 and seq[l-1]>i):
+            continue
+        seq.append(i)
+        backtrack()
+        seq.pop()
+ 
+backtrack()
