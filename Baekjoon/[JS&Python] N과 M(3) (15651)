@@ -1,0 +1,64 @@
+/**
+ * 
+ * 1부터 N까지, M개의 수열
+ * 중복 가능
+ * 1~M~N~7
+ * 
+ * 
+ * 시간초과가 났다.
+ * 따라서, 기존처럼 수열 길이가 충족이 되었을 때 콘솔을 출력을 할게 아니라
+ * 문자열에 저장했다가 나중에 한번에 출력해보자
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.on("line", (line)=>{
+    const [N, M] = line.split(" ").map(Number);
+
+    function backtrack() {
+        if (sequence.length === M) {
+            result += sequence.join(" ") + "\n";
+            return;
+        }
+
+        for (let i=1; i<=N; i++) {
+            sequence.push(i);
+            backtrack();
+            sequence.pop();
+        }
+    }
+
+    const sequence = [];
+    let result = "";
+    backtrack();
+    console.log(result);
+
+    rl.close();
+});
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+n,m = list(map(int, input().split()))
+ 
+seq = []
+def backtrack():
+    if len(seq)==m:
+        print(*seq)
+        return
+    
+    for i in range(1, n+1):
+        seq.append(str(i))
+        backtrack()
+        seq.pop()
+ 
+backtrack()
