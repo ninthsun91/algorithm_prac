@@ -1,0 +1,211 @@
+/**
+ * 
+ * NxN 체스판 위에 N개의 퀸을 서로 공격할 수 없게 놓는 경우의 수
+ * 
+ * 가로세로대각선 모든 방향에 서로 없어야함
+ * 
+ * 일단 한줄에 1개...
+ * 
+ * C = [N][N]
+ * 
+ * 
+ * C[0][0]
+ * 
+ * C[n][m]
+ * C[n]
+ * C[m]
+ * C[n-i][m-i] , C[n-i][m+i], C[n+i][m+i], C[n+i][m+i]
+ * 
+ * 
+ * count = 0
+ * C[n][m] > 지우기 > 다음 위치 탐색 C[n+1]에서 0인 C[n+1][m]
+ *      그 자리에 C++ & Queen++
+ *      backtrack   >> Queen === N이 되면 count++
+ *      실행취소 후에 다음 loop
+ * 
+ */
+
+
+
+// const rl = require("readline").createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+
+// rl.on("line", (line)=>{
+//     console.time("queen");
+//     const N = Number(line);
+//     const C = [];
+//     for (let i=0; i<N; i++) {
+//         C.push(Array.from({length: N}, ()=>0));
+//     }
+
+//     let count = 0;
+//     let Queen = 0;
+
+//     function backtrack(I) {
+//         if (Queen===N) {
+//             // console.log("Queen === N, count++ ", C)
+//             count++;
+//             return;
+//         }
+
+//         for (let n=I; n<N; n++) {
+//             for (let m=0; m<N; m++) {
+//                 if (C[n][m] !== 0) continue;
+//                 if (C[n].indexOf(0) === -1) continue;
+
+//                 // console.log("n, m: ", n, m);
+//                 C[n][m]++;
+//                 Queen++;
+                
+//                 // n열 지우기
+//                 for (let y=0; y<N; y++) {
+//                     if (y === m) continue;
+//                     C[n][y]++;
+//                 }
+
+//                 // m행 지우기
+//                 for (let x=0; x<N; x++) {
+//                     if (x === n) continue;
+//                     C[x][m]++;
+//                 }
+
+//                 // 대각선 지우기    n-i,m-i / n-i,m+i / n+i,m-i / n+i,m+i
+//                 for (let i=1; i<N; i++) {
+//                     if (0<=n-i && 0<=m-i) C[n-i][m-i]++;
+//                     if (0<=n-i && m+i<N) C[n-i][m+i]++;
+//                     if (n+i<N && 0<=m-i) C[n+i][m-i]++;
+//                     if (n+i<N && m+i<N) C[n+i][m+i]++;
+//                 }
+     
+
+//                 backtrack(n+1);
+
+//                 // 실행취소
+
+//                 C[n][m]--;
+//                 Queen--;
+                
+//                 for (let y=0; y<N; y++) {
+//                     if (y === m) continue;
+//                     C[n][y]--;
+//                 }
+
+//                 for (let x=0; x<N; x++) {
+//                     if (x === n) continue;
+//                     C[x][m]--;
+//                 }
+
+//                 for (let i=1; i<N; i++) {
+//                     if (0<=n-i && 0<=m-i) C[n-i][m-i]--;
+//                     if (0<=n-i && m+i<N) C[n-i][m+i]--;
+//                     if (n+i<N && 0<=m-i) C[n+i][m-i]--;
+//                     if (n+i<N && m+i<N) C[n+i][m+i]--;
+//                 }
+//             }
+//         }
+//     }
+
+//     backtrack(0);
+//     console.timeEnd("queen");
+//     console.log(count);
+
+//     rl.close();
+// });
+
+
+
+/** 
+ * 
+ * 시간초과... 2차원 배열을 1차원화 시켜보자.
+ * 
+ * N*N 길이의 배열
+ * i에 퀸을 놓았다면, -(N-1)n, -Nn, -(N+1)n, +(N-1)n, +Nn, +(N+1)n
+ *                  그리고 //N 이 같은 인덱스들은 퀸 불가
+ * 
+ * 
+ */
+
+
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+
+rl.on("line", (line)=>{
+    console.time("queen");
+    const N = Number(line);
+    const C = [];
+    for (let i=0; i<N*N; i++) {
+        C.push(0)
+    }
+
+    let count = 0;
+    let Queen = 0;
+
+    function backtrack(I) {
+        if (Queen===N) {
+            console.log("Queen===N", C);
+            count++;
+            return;
+        }
+
+        for (let n=I; n<N*N; n++) {
+            if (C[n] !== 0) continue;
+
+            console.log(n);
+            C[n]++;
+            Queen++;
+
+            for (let x=1; x<=N; x++) {
+                if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]++;
+                if (0<n-N*x) C[n-N*x]++;
+                if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]++;
+
+                if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]++;
+                if (n+N*x<N*N)C[n+N*x]++;
+                if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]++;
+            }
+            console.log("vertical&X: ", C);
+
+            const quotient = (n / N)|0;
+            for (let i=0; i<N; i++) {
+                if (quotient*N+i === n) continue;
+                C[quotient*N+i]++;
+            }
+
+            console.log("preback: ", C);
+            // backtrack(N*(quotient+1));
+            backtrack(n+1)
+
+            console.log("postback: ", C);
+
+            C[n]--;
+            Queen--;
+
+            for (let x=1; x<=N; x++) {
+                if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]--;
+                if (0<n-N*x) C[n-N*x]--;
+                if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]--;
+
+                if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]--;
+                if (n+N*x<N*N)C[n+N*x]--;
+                if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]--;
+            }
+            for (let i=0; i<N; i++) {
+                if (quotient*N+i === n) continue;
+                C[quotient*N+i]--;
+            }
+            console.log("endOfLoop: ", C);
+        }
+    }
+
+    backtrack(0);
+    console.timeEnd("queen");
+    console.log(count);
+
+    rl.close();
+});
