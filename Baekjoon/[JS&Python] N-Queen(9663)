@@ -129,7 +129,102 @@
  */
 
 
- const rl = require("readline").createInterface({
+//  const rl = require("readline").createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+
+// rl.on("line", (line)=>{
+//     console.time("queen");
+//     const N = Number(line);
+//     const C = [];
+//     for (let i=0; i<N*N; i++) {
+//         C.push(0)
+//     }
+
+//     let count = 0;
+//     let Queen = 0;
+
+//     function backtrack(I) {
+//         if (Queen===N) {
+//             console.log("Queen===N", C);
+//             count++;
+//             return;
+//         }
+
+//         for (let n=I; n<N*N; n++) {
+//             if (C[n] !== 0) continue;
+
+//             console.log(n);
+//             C[n]++;
+//             Queen++;
+
+//             for (let x=1; x<=N; x++) {
+//                 if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]++;
+//                 if (0<n-N*x) C[n-N*x]++;
+//                 if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]++;
+
+//                 if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]++;
+//                 if (n+N*x<N*N)C[n+N*x]++;
+//                 if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]++;
+//             }
+//             console.log("vertical&X: ", C);
+
+//             const quotient = (n / N)|0;
+//             for (let i=0; i<N; i++) {
+//                 if (quotient*N+i === n) continue;
+//                 C[quotient*N+i]++;
+//             }
+
+//             console.log("preback: ", C);
+//             // backtrack(N*(quotient+1));
+//             backtrack(n+1)
+
+//             console.log("postback: ", C);
+
+//             C[n]--;
+//             Queen--;
+
+//             for (let x=1; x<=N; x++) {
+//                 if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]--;
+//                 if (0<n-N*x) C[n-N*x]--;
+//                 if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]--;
+
+//                 if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]--;
+//                 if (n+N*x<N*N)C[n+N*x]--;
+//                 if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]--;
+//             }
+//             for (let i=0; i<N; i++) {
+//                 if (quotient*N+i === n) continue;
+//                 C[quotient*N+i]--;
+//             }
+//             console.log("endOfLoop: ", C);
+//         }
+//     }
+
+//     backtrack(0);
+//     console.timeEnd("queen");
+//     console.log(count);
+
+//     rl.close();
+// });
+
+
+
+/**
+ * 
+ * 여전히 시간초과
+ * 그럼 배열이 문제가 아니라 역시 너무 많은 조건문과 증감 연산이 문제다
+ * 
+ * 퀸의 위치를 (x,y), 임의의 대각선 위치를 (x1,y1)이라고 했을 때,
+ * abs(x-x1) === abs(y-y1)이다.
+ * 
+ */
+
+
+
+const rl = require("readline").createInterface({
     input: process.stdin,
     output: process.stdout,
 });
@@ -139,68 +234,34 @@ rl.on("line", (line)=>{
     console.time("queen");
     const N = Number(line);
     const C = [];
-    for (let i=0; i<N*N; i++) {
-        C.push(0)
+    for (let i=0; i<N; i++) {
+        C.push(0);
     }
 
     let count = 0;
-    let Queen = 0;
 
-    function backtrack(I) {
-        if (Queen===N) {
-            console.log("Queen===N", C);
+    function backtrack(n) {
+        if (n===N) {
+            // console.log("Queen === N, count++ ", C)
             count++;
             return;
         }
 
-        for (let n=I; n<N*N; n++) {
-            if (C[n] !== 0) continue;
-
-            console.log(n);
-            C[n]++;
-            Queen++;
-
-            for (let x=1; x<=N; x++) {
-                if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]++;
-                if (0<n-N*x) C[n-N*x]++;
-                if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]++;
-
-                if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]++;
-                if (n+N*x<N*N)C[n+N*x]++;
-                if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]++;
+        for (let m=0; m<N; m++) {
+            C[n] = m;
+            if (available(n)) {
+                backtrack(n+1)
             }
-            console.log("vertical&X: ", C);
-
-            const quotient = (n / N)|0;
-            for (let i=0; i<N; i++) {
-                if (quotient*N+i === n) continue;
-                C[quotient*N+i]++;
-            }
-
-            console.log("preback: ", C);
-            // backtrack(N*(quotient+1));
-            backtrack(n+1)
-
-            console.log("postback: ", C);
-
-            C[n]--;
-            Queen--;
-
-            for (let x=1; x<=N; x++) {
-                if (0<n-(N-1)*x && n%N!==(N-1)) C[n-(N-1)*x]--;
-                if (0<n-N*x) C[n-N*x]--;
-                if (0<n-(N+1)*x  && n%N!==0) C[n-(N+1)*x]--;
-
-                if (n+(N-1)*x<N*N && n%N!==0) C[n+(N-1)*x]--;
-                if (n+N*x<N*N)C[n+N*x]--;
-                if (n+(N+1)*x<N*N && n%N!==(N-1))C[n+(N+1)*x]--;
-            }
-            for (let i=0; i<N; i++) {
-                if (quotient*N+i === n) continue;
-                C[quotient*N+i]--;
-            }
-            console.log("endOfLoop: ", C);
         }
+    }
+
+    function available(n) {
+        for (let i=0; i<n; i++) {
+            if (C[i] === C[n] || Math.abs(C[n]-C[i]) === Math.abs(n-i)) {
+                return false
+            }
+        }
+        return true;
     }
 
     backtrack(0);
@@ -209,3 +270,42 @@ rl.on("line", (line)=>{
 
     rl.close();
 });
+
+
+
+
+
+
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+
+C = [0]*N
+count = 0
+
+def available(n):
+    for i in range(n):
+        if (C[n]==C[i]) or (abs(C[n]-C[i])==abs(n-i)):
+            return False
+    return True
+
+def backtrack(n):
+    global count
+    if n == N:
+        count += 1
+        return
+    
+    for m in range(N):
+        C[n] = m
+        if available(n):
+            backtrack(n+1)
+
+backtrack(0)
+
+print(count)
