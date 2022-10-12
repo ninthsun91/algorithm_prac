@@ -1,0 +1,50 @@
+/**
+ * 
+ * 원이 반지름과 둘레의 길이는 서로 정비례한다.
+ * 따라서, 반지름의 비를 구하자
+ * 
+ */
+
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+let input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+});
+
+rl.on("close", ()=>{
+    const N = Number(input.shift());
+    const rings = input[0].split(" ").map(Number);
+    
+    const A = rings.shift();
+    for (const B of rings) {
+        console.log(A/getGCD(A,B) + "/" + B/getGCD(A,B));
+    }
+});
+
+function getGCD(A, B) {
+    while (A%B !== 0) {
+        [A, B] = [B%A, A];
+    }
+    return B
+}
+
+
+
+
+
+
+
+import sys, math
+input = sys.stdin.readline
+
+N = int(input())
+rings = list(map(int, input().split()))
+
+A = rings.pop(0)
+for B in rings:
+    print(str(int(A/math.gcd(A,B))) + "/" + str(int(B/math.gcd(A,B))))
