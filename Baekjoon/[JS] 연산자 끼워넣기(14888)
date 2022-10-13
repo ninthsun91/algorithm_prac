@@ -1,0 +1,172 @@
+/**
+ * 
+ * N개의 수로 이루어진 수열 A1 ... An
+ * N-1 개의 연산자 (+ | - | * | /)
+ * 
+ * 연산자 우선순위를 무시하고 앞에서부터 연산
+ * 나눗셈은 몫만 취함
+ * 
+ * 결과의 최댓값과 최솟값
+ * 
+ * Op = "0 0 1 0"   > Op = [ 2 ]
+ * Op = "1 2 2 1"   > Op = [ 0, 1, 1, 2, 2, 3 ]
+ * Op 나열하는 경우의 수
+ * 
+ * N-1에 도달했을 때 연산 calc()
+ * 
+ */
+
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length === 3) rl.close();
+});
+
+rl.on("close", ()=>{
+    const N = Number(input.shift());
+    const A = input.shift().split(" ").map(Number);
+    
+    const Op = [];
+    input[0].split(" ").map(Number).forEach((a, key)=>{
+        for (let i=0; i<a; i++) {
+            Op.push(key);
+        }
+    });
+    const L = Op.length;
+
+    const op = [];
+    const sumSet = new Set();
+    let cnt = 0;
+    function backtrack(n) {
+        if (op.length === L) {
+            sumSet.add(calc(A, Array.from(op)));
+            cnt++
+            return;
+        }
+        for (let i=0; i<n; i++) {
+            op.push(Op.shift());
+            backtrack(n-1);
+            Op.push(op.pop());
+        }
+    }
+
+    backtrack(L);
+
+    const sum = [...sumSet];
+    sum.sort((a,b)=>a-b);
+    console.log(sum[sum.length-1]);
+    console.log(sum[0]);
+});
+
+function calc(A, Op) {
+    return A.reduce((a,b)=>{
+        const op = Op.shift();
+        switch (op) {
+            case 0:
+                return a + b;
+            case 1:
+                return a - b;
+            case 2:
+                return a * b;
+            case 3:
+                return (a / b) |0;
+        }
+    });    
+}
+
+
+/**
+ * 
+ * 일단 정답은 맞았는데, 다른 정답들 대비 시간이 상당히 오래 걸렸다.
+ * 1808ms vs 200~300ms
+ * 
+ * reduce()랑 sort()가 시간복잡도가 안 좋아서 그런것 같으니까 이를 수정했다.
+ * 
+ * 
+ * 하지만 여전히 1500ms
+ * 
+ * 빠른 정답을 보니 입력 받은 연사자 개수 배열에 ++ --를 이용했길래 따라해본다.
+ * 
+ * 224ms까지 줄었다.
+ * push(), shift(), pop() 처럼 단순한 배열 메소드를 썼음에도 불구하고
+ * 배열 메소드는 단순한 증감 연산보다 훨씬 시간 복잡도가 좋지 않은 모양이다.
+ * 
+ */
+ 
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length === 3) rl.close();
+});
+
+rl.on("close", ()=>{
+    const N = Number(input.shift());
+    const A = input.shift().split(" ").map(Number);    
+    const Op = input[0].split(" ").map(Number);
+
+    const op = [];
+    let max = Number.MIN_SAFE_INTEGER;
+    let min = Number.MAX_SAFE_INTEGER;
+
+    function backtrack(n) {
+        if (op.length === A.length-1) {
+            const sum = calc(A, Array.from(op));
+            if (sum > max) max = sum;
+            if (sum < min) min = sum;
+            return;
+        }
+        for (let i=0; i<Op.length; i++) {
+            if (Op[i]===0) continue;
+
+            Op[i]--;
+            op.push(i);
+
+            backtrack(n+1);
+
+            op.pop(i);
+            Op[i]++;            
+        }
+    }
+
+    backtrack(0);
+
+    console.log(max + "\n" + min);
+});
+
+function calc(A, Op) {
+    let sum = A[0];
+    for (let i=0; i<Op.length; i++) {
+        const a = A[i+1]
+        switch (Op[i]) {
+            case 0:
+                sum += a;
+                break;
+            case 1:
+                sum -= a;
+                break;
+            case 2:
+                sum *= a;
+                break;
+            case 3:
+                sum = (sum / a) |0;
+                break;
+        }
+    }
+    return sum;
+}
