@@ -1,0 +1,82 @@
+/**
+ * 
+ * 평일 오후. 의무ㄴㄴ
+ * N명 짝수
+ * 
+ * Sij  = i번 사람과 j번 사람의 시너지 능력치
+ * 팀 능력치 차이 최솟값
+ * 
+ * 팀 조합 백트랙 > 팀 내 2명 조합 백트랙
+ * 으로 2중 백트랙을 짜면 될 것 같다.
+ * 
+ */
+
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on("line", (line)=>{
+    input.push(line);
+
+    if (input.length -1 == input[0]) rl.close();
+});
+
+rl.on("close", ()=>{
+    const N = Number(input.shift());
+    const S = [];
+    for (const row of input) {
+        S.push(row.split(" ").map(Number));
+    }
+
+    const team1 = [0];
+    let min = Number.MAX_SAFE_INTEGER;
+    function makeTeam(n) {
+        if (team1.length === N/2) {
+            const team2 = [];
+            for (let j=1; j<N; j++) {
+                if (!team1.includes(j)) team2.push(j);
+            }
+
+            const comb1 = [];
+            const comb2 = [];
+            let sum1 = 0;
+            let sum2 = 0;       
+            function minStat(n, team1, team2) {
+                if (comb1.length === 2) {
+                    sum1 += S[comb1[0]][comb1[1]] + S[comb1[1]][comb1[0]];
+                    sum2 += S[comb2[0]][comb2[1]] + S[comb2[1]][comb2[0]];
+                    
+                    return;
+                }
+                
+                for (let i=n; i<N/2; i++) {
+                    comb1.push(team1[i]);
+                    comb2.push(team2[i]);
+                
+                    minStat(i+1, team1, team2);
+                    
+                    comb1.pop();
+                    comb2.pop();
+                }      
+            }            
+   
+            minStat(0, team1, team2)
+            const sum = Math.abs(sum1 - sum2);
+            if (sum < min) min = sum;
+            
+            return;
+        }
+
+        for (let i=n; i<N; i++) {
+            team1.push(i);
+            makeTeam(i+1);
+            team1.pop(i);
+        }
+    }
+    
+    makeTeam(1);
+    console.log(min);
+});
