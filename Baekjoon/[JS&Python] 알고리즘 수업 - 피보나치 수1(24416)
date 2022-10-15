@@ -1,0 +1,129 @@
+/**
+ * 
+ * 재귀와 dfs의 반복 횟수를 비교하는 문제.
+ * 주어진 코드를 내 환경에 맞게 변환하고 실행횟수를 카운팅한다.
+ * 
+ */
+
+const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const n = Number(line);
+
+    let cnt1 = 0;
+    function recursive(n) {
+        if (n === 1 || n === 2) {
+            cnt1++;
+            return 1;
+        }
+        return recursive(n-1) + recursive(n-2);
+    }
+
+    const fib = [0];
+    let cnt2 = 0;
+    function dfs(n) {
+        for (let i=1; i<=n; i++) {
+            if (i === 1 || i === 2) {
+                fib.push(1);
+                continue;
+            }
+            cnt2++;
+            fib.push(fib[i-1]+fib[i-2]);
+        }
+    }
+
+    recursive(n);
+    dfs(n);
+    console.log(cnt1, cnt2);
+    rl.close();
+});
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+
+cnt1 = 0
+def rec(n):
+    global cnt1
+    if (n == 1) or (n == 2):
+        cnt1 += 1
+        return 1
+    return rec(n-1)+rec(n-2)
+
+fib = [0]
+cnt2 = 0
+def dfs(n):
+    global cnt2
+    for i in range(1, n+1):
+        if (i == 1) or (i == 2):
+            fib.append(1)
+            continue
+        fib.append(fib[i-1]+fib[i-2])
+        cnt2 += 1
+rec(n)
+dfs(n)
+print(cnt1, cnt2)
+
+
+
+
+
+/**
+ * 
+ * 그런데 파이썬 코드는 시간초과가 났다.
+ * 즉, 단순히 코드 실행 횟수를 카운팅하는게 목적이 아닌 문제로 보인다.
+ * 
+ * 재귀에서 return 1을 카운팅하는 횟수는 결국에 n번째 피보나치 수와 같다.
+ * 따라서, 굳이 재귀함수의 실행 횟수를 셀 필요가 없이,
+ * dfs로 구한 피보나치 수열에서 n번째 수와, dfs의 시행 횟수가 되는 n-2를 출력하면된다.
+ * 
+ */
+ 
+ 
+ const rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on("line", (line)=>{
+    const n = Number(line);
+    const fib = [0];
+    dfs(fib, n);
+    console.log(fib[n], n-2);
+    rl.close();
+});
+
+function dfs(fib, n) {
+    for (let i=1; i<=n; i++) {
+        if (i === 1 || i === 2) {
+            fib.push(1);
+            continue;
+        }
+        fib.push(fib[i-1]+fib[i-2]);
+    }
+}
+
+
+
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+
+fib = [0]
+def dfs(n):
+    for i in range(1, n+1):
+        if (i == 1) or (i == 2):
+            fib.append(1)
+            continue
+        fib.append(fib[i-1]+fib[i-2])
+
+dfs(n)
+print(fib[n], n-2)
