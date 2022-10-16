@@ -1,0 +1,117 @@
+/**
+ * 
+ * recursive w(a,b,c) >> dfs
+ * 
+ * a,b,c 중 하나라도 0이하가 될때까지
+ * a,b,c중 하나라도 20이상이면 w(20,20,20)
+ * else >> a-1
+ * 
+ * w(a,b,c) = w(a,b,c-1) + w(a,b-1,c-1) - w(a,b-1,c)
+ * w(a,b,c) = w(a-1,b,c) + w(a-1,b-1,c) + w(a-1,b,c-1) - w(a-1,b-1,c-1)
+ * 
+ * downToTop으로 dfs를 채워가려니 좀 애매하고,
+ * 그냥 재귀 돌리면서 그때그때 값을 dfs에 저장해보기로 한다.
+ * 
+ * 3중 배열을 쓰는거보다 Map을 쓰는게 더 빠를거 같으니 Map을 써보자.
+ * 
+ */
+
+//  if a <= 0 or b <= 0 or c <= 0, then w(a, b, c) returns:
+//  1
+
+// if a > 20 or b > 20 or c > 20, then w(a, b, c) returns:
+//  w(20, 20, 20)
+
+// if a < b and b < c, then w(a, b, c) returns:
+//  w(a, b, c-1) + w(a, b-1, c-1) - w(a, b-1, c)
+
+// otherwise it returns:
+//  w(a-1, b, c) + w(a-1, b-1, c) + w(a-1, b, c-1) - w(a-1, b-1, c-1)
+
+// function recW(a, b, c) {
+//     // console.log(a,b,c);
+//     if (a<=0 || b<=0 || c<=0) return 1;
+//     if (a>20 || b>20 || c>20) return recW(20, 20, 20);
+//     if (a<b && b<c) return recW(a, b, c-1) + recW(a, b-1, c-1) - recW(a, b-1, c);
+//     return recW(a-1, b, c) + recW(a-1, b-1, c) + recW(a-1, b, c-1) - recW(a-1, b-1, c-1);
+// }
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    if (line === '-1 -1 -1') rl.close();
+    input.push(line);
+});
+
+
+rl.on('close', ()=>{
+    const dfs = new Map();
+
+    function recW(a, b, c) {
+        const key = `${a}${b}${c}`
+
+        if (a<=0 || b<=0 || c<=0) return 1;
+        if (a>20 || b>20 || c>20) return recW(20, 20, 20);
+
+        if (dfs.get(key)) return dfs.get(key);
+
+        if (a<b && b<c) {
+            dfs.set(key, recW(a, b, c-1) + recW(a, b-1, c-1) - recW(a, b-1, c));
+            return dfs.get(key);
+        };
+        dfs.set(key, recW(a-1, b, c) + recW(a-1, b-1, c) + recW(a-1, b, c-1) - recW(a-1, b-1, c-1));
+        return dfs.get(key)
+    }
+
+    for (const line of input) {
+        const [a,b,c] = line.split(' ').map(Number);
+        console.log(`w(${a}, ${b}, ${c}) = ${recW(a,b,c)}`);
+    }
+});
+
+
+/**
+ * 
+ * 어딘가 놓친 반례가 있는지 오답이 나온다...
+ * 백준 질문게시판에서 여러 반례들을 대입해봤을때도 정상적으로 나오고
+ * 도저히 원인을 찾을 수가 없어서 Map을 Array로만 바꿨고 바로 정답 처리는 됐다.
+ * 
+ * 하지만 Mapping 어디에 문제가 있었는지는 모르겠다.
+ * 
+ */
+
+
+
+rl.on('close', ()=>{
+    const dfs = [];
+    for (let i=0; i<=20; i++) {
+        dfs.push([]);
+        for (let j=0; j<=20; j++) {
+            dfs[i].push(Array.from({length: 21}, ()=>0));
+        }
+    }
+
+    function recW(a, b, c) {
+        if (a<=0 || b<=0 || c<=0) return 1;
+        if (a>20 || b>20 || c>20) return recW(20, 20, 20);
+
+        if (dfs[a][b][c]) return dfs[a][b][c];
+
+        if (a<b && b<c) {
+            dfs[a][b][c] = recW(a, b, c-1) + recW(a, b-1, c-1) - recW(a, b-1, c);
+            return dfs[a][b][c];
+        };
+        dfs[a][b][c] = recW(a-1, b, c) + recW(a-1, b-1, c) + recW(a-1, b, c-1) - recW(a-1, b-1, c-1);
+        return dfs[a][b][c];
+    }
+
+    for (const line of input) {
+        const [a,b,c] = line.split(' ').map(Number);
+        console.log(`w(${a}, ${b}, ${c}) = ${recW(a,b,c)}`);
+    }
+});
