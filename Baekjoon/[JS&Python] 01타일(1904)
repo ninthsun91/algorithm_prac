@@ -1,0 +1,52 @@
+/**
+ * 
+ * N자리의 2진수
+ * 단, 1 & 00 만 사용 가능
+ * 
+ * N=1: 1                           1
+ * N=2: 00 11                       0 3
+ * N=3: 001 100 111                 1 4 7
+ * N=4: 0000 0011 1001 1100 1111    0 3 9 12 15
+ * N=5: 00001 00100 00111 10000 10011 11001 11100 11111
+ *                                  1 4 7 16 19 25 28 31
+ * N=6: 000000 000011 001001 001100 001111 100001 100100 100111 110000 110011 111001 111100 111111
+ *                                  0 3 9 12 15 33 36 39 48 51 57 60 63
+ * 1 2 3 5 8 13
+ * 
+ * N[n] = N[n-1] + N[n-2]
+ *  >> fibo
+ * 
+ * fibo(N) % 15746
+ */
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on('line', (line)=>{
+    const N = Number(line);
+
+    const fibo = [1, 1];
+    for (let i=2; i<=N; i++) {
+        fibo[i] = (fibo[i-1] + fibo[i-2]) % 15746;
+    }
+
+    console.log(fibo[N]);
+    rl.close();
+});
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+
+fib = [1]*(N+1)
+for i in range(2, N+1):
+    fib[i] = (fib[i-1] + fib[i-2]) % 15746
+
+print(fib[N])
