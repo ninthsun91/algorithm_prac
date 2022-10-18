@@ -1,0 +1,308 @@
+/**
+ * 
+ * 스도쿠(2580)
+ * 
+ * S = 9*9 Array
+ * S[n][m]
+ * 
+ * 가로줄 > n이 같은 수들
+ * 세로줄 > m이 같은 수들
+ * 타일 > (0, 1, 2)*(n//3)
+ * 
+ * if 45 - sum < 10
+ *      >> 숫자 입력
+ * else
+ *      >> 인덱스 저장 후에 다음 0
+ * 
+ * 
+ */
+
+// const rl = require('readline').createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// const input = [];
+
+// rl.on('line', (line)=>{
+//     input.push(line);
+
+//     if (input.length === 9) rl.close();
+// });
+
+// rl.on('close', ()=>{
+//     const S = new Array(9);
+//     for (let i=0; i<9; i++) {
+//         S[i] = input.shift().split(' ').map(Number);
+//     }
+
+//     const temp = [];
+//     for (let n=0; n<9; n++) {
+//         for (let m=0; m<9; m++) {
+//             if (S[n][m]) continue;
+
+//             // 가로줄
+//             if (ifCol(S, [n,m])) continue;            
+
+//             // 세로줄
+//             if (ifRow(S, [n,m])) continue;
+
+//             // 타일
+//             if (ifTile(S, [n,m])) continue;            
+
+//             temp.push([n, m]);
+//         }
+//     }
+
+//     while (temp.length) {
+//         console.log("temp: ", temp[0]);
+//         const i = temp.shift();
+//         if (ifCol(S, i)) continue;            
+
+//         // 세로줄
+//         if (ifRow(S, i)) continue;
+
+//         // 타일
+//         if (ifTile(S, i)) continue; 
+
+//         temp.push(i);
+//     }
+
+//     console.log('=========result==========');
+//     let result = '';
+//     for (const s of S) {
+//         result += s.join(' ') + '\n';
+//     }
+//     console.log(result);
+// });
+
+// function ifCol(S, [n,m]) {
+//     let sum = 0;
+//     let cnt = 0;
+//     for (let x=0; x<9; x++) {
+//         if (S[n][x] === 0) cnt++;
+//         sum += S[n][x];
+//     }
+//     if (45-sum < 10 && cnt===1) {
+//         console.log("ifCol: ", n, m, sum);
+//         S[n][m] = 45-sum;
+//         return true;
+//     }
+//     return false
+// }
+
+// function ifRow(S, [n,m]) {
+//     let sum = 0;
+//     let cnt = 0;
+//     for (let y=0; y<9; y++) {
+//         if (S[y][m] === 0) cnt++;
+//         sum += S[y][m];
+//     }
+//     if (45-sum < 10 && cnt===1) {
+//         console.log("ifRow: ", n, m, sum);
+//         S[n][m] = 45-sum;
+//         return true;
+//     }
+//     return false;
+// }
+
+// function ifTile(S, [n,m]) {
+//     let sum = 0;
+//     let cnt = 0;
+//     for (let z=0; z<3; z++) {
+//         const qn = (n/3)|0;
+//         const qm = (m/3)|0;
+
+//         sum += S[qn*3+z][qm*3] + S[qn*3+z][qm*3+1] + S[qn*3+z][qm*3+2];
+//         const check = S[qn*3+z][qm*3] * S[qn*3+z][qm*3+1] * S[qn*3+z][qm*3+2];
+//         if (check === 0) cnt++;
+//     }
+//     if (45-sum < 10 && cnt===1) {
+//         console.log("ifTile: ", n, m, sum);
+//         S[n][m] = 45-sum;
+//         return true;
+//     }
+//     return false;
+// }
+
+
+
+/**
+ * 
+ * 시간초과가 난다.
+ * 이게 더 빠를거라 생각했는데 아닌것 같음.
+ * 백트랙 기법으로 다시 풀어보자.
+ * 
+ */
+
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    input.push(line);
+
+    if (input.length === 9) rl.close();
+});
+
+rl.on('close', ()=>{
+    const S = [];
+    for (const line of input) {
+        S.push(...line.split(' ').map(Number));
+    }
+
+    // S[0] = 1;
+    // S[13] = 3
+    // console.log(isValid(S, 0))
+
+    function sudoku(I) {
+        if (I===81) {
+            let result = '';
+            for (let i=0; i<81; i++) {
+                if (i%9 === 8) result += `${S[i]}\n`
+                else result += `${S[i]} `
+            }
+            console.log("END");
+            console.log(result);
+            return true;
+        }
+        if (I!==0 && !isValid(S, I-1)) {
+            // console.log(S[I-1], 'INCORRECT PLACEMENT');
+            return false;
+        }
+
+        // valid
+        for (let i=I; i<81; i++) {
+            // console.log('index: ', i);
+            if (S[i] !== 0) continue;
+            for (let n=1; n<=9; n++) {
+                // console.log('trying: ', n);
+
+                S[i] = n;
+
+                if (sudoku(i+1)) break;
+
+            }
+        }
+        // console.log("end of loop");
+        // let result = '';
+        // for (let i=0; i<81; i++) {
+        //     if (i%9 === 8) result += `${S[i]}\n`
+        //     else result += `${S[i]} `
+        // }
+        // console.log(result);
+
+    }
+    
+
+    sudoku(0);
+});
+
+/**
+ * 13 > q = 1 / r = 4
+ *  3  4  5         9*(q-1)+(r+(-1~+1))
+ * 12 13 14         9*q+(r+(-1~+1))
+ * 21 22 23         9*(q+1)+(r+(-1~+1))
+ * 
+ */
+function isValid(S, I) {
+    const q = (I / 9) |0;
+    const r = I % 9;
+
+    // console.log(I, S[I], q, r);
+    
+    // col >> q
+    const check = new Set()
+    for (let x=0; x<9; x++) {
+        // console.log('col');
+        if (S[9*q + x]!==0 && check.has(S[9*q + x])) return false;
+        check.add(S[9*q + x]);
+    }
+
+    // row >> r
+    check.clear()
+    for (let y=0; y<9; y++) {
+        // console.log('row');
+        if (S[9*y + r]!==0 && check.has(S[9*y + r])) return false;
+        check.add(S[9*y + r]);
+    }
+
+    // block
+    const qi = (q/3) |0;
+    const ri = (r/3) |0;
+
+    ( (3*qi)+[0,1,2] ) + ( (3*ri)+[0,1,2] )
+
+    check.clear();
+    for (let a=0; a<3; a++) {
+        for (let b=0; b<3; b++) {
+            const index = ( 9*((3*qi)+a) ) + ( (3*ri)+b );
+            // console.log('block', index, S[index]);
+            if (S[index]!==0 && check.has(S[index])) return false;
+            check.add(S[index]);
+        }
+    }
+
+    // console.log("ALL PASS");
+    return true;    
+}
+
+
+/**
+ * 
+ * 이번에는 오답이 있다.
+ * 000 000 000
+ * 000 000 000
+ * ...
+ * 
+ * 이런거처럼 특수한 케이스의 반례가 있는걸 확인
+ * 
+ */
+
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+//  0 0 0 0 0 0 0 0 0
+
+// expected answer
+// 1 2 3 4 5 6 7 8 9
+// 4 5 6 7 8 9 1 2 3
+// 7 8 9 1 2 3 4 5 6
+// 2 1 4 3 6 5 8 9 7
+// 3 6 5 8 9 7 2 1 4
+// 8 9 7 2 1 4 3 6 5
+// 5 3 1 6 4 2 9 7 8
+// 6 4 2 9 7 8 5 3 1
+// 9 7 8 5 3 1 6 4 2
+
+
+
+// 0 2 0 9 0 5 0 0 0
+// 5 9 0 0 3 0 2 0 0
+// 7 0 0 6 0 2 0 0 5
+// 0 0 9 3 5 0 4 6 0
+// 0 5 4 0 0 0 7 8 0
+// 0 8 3 0 2 7 5 0 0
+// 8 0 0 2 0 9 0 0 4
+// 0 0 5 0 4 0 0 2 6
+// 0 0 0 5 0 3 0 7 0
+
+// expected answer
+// 3 2 1 9 7 5 6 4 8
+// 5 9 6 8 3 4 2 1 7
+// 7 4 8 6 1 2 9 3 5
+// 1 7 9 3 5 8 4 6 2
+// 2 5 4 1 9 6 7 8 3
+// 6 8 3 4 2 7 5 9 1
+// 8 1 7 2 6 9 3 5 4
+// 9 3 5 7 4 1 8 2 6
+// 4 6 2 5 8 3 1 7 9
