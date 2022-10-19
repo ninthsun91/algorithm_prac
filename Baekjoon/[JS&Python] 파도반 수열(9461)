@@ -1,0 +1,57 @@
+/**
+ * 
+ * 정삼각형의 나선 확장.
+ * P(10): 1 1 1 2 2 3 4 5 7 9 12 16 21 ..
+ * 
+ * P(N) = P(N-1) + P(N-5)
+ * 
+ */
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    input.push(line);
+
+    if (input.length - 1 == input[0]) rl.close();;
+});
+
+rl.on('close', ()=>{
+    const P = [0,1,1,1,2];
+
+    input.shift();
+    for (const N of input) {
+        if (Number(N) <= P.length - 1) {
+            console.log(P[N]);
+        } else {
+            for (let i=P.length; i<=N; i++) {
+                P.push(P[i-1]+P[i-5]);
+            }
+            console.log(P[N]);
+        }
+    }
+});
+
+
+import sys
+input = sys.stdin.readline
+
+T = int(input())
+P = [0,1,1,1,2]
+
+result = ''
+for i in range(T):
+    N = int(input())
+    
+    if N <= len(P)-1:
+        result += str(P[N]) + '\n'
+    else:
+        for j in range(len(P), N+1):
+            P.append(P[j-1]+P[j-5])
+        result += str(P[N]) + '\n'
+
+print(result)
