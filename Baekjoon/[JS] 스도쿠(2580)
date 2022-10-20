@@ -1,5 +1,99 @@
 /**
  * 
+ * 최종적으로 얻은 답안
+ * 
+ * 같은 줄/행/블럭에 0이 추가로 있을 경우에 대한 처리를 잘 해내지 못했다.
+ * 숫자를 먼저 넣고 > 검증하는 과정에 문제가 있었는데 케치를 못했고,
+ * 다른 답안을 참고해서 검증부터하고 숫자를 넣는 방식으로 다시 만들면서 정답을 낼 수 있었다.
+ * 
+ */
+ 
+ const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    input.push(line);
+
+    if (input.length === 9) rl.close();
+});
+
+rl.on('close', ()=>{
+    const S = new Array(9);
+    for (let i=0; i<9; i++) {
+        S[i] = input.shift().split(' ').map(Number);
+    }
+
+    const unsolved = []
+    for (let n=0; n<9; n++) {
+        for (let m=0; m<9; m++) {
+            if (S[n][m] === 0) unsolved.push([n, m])
+        }
+    }
+
+    function checkCol(n, i) {
+        for (let x=0; x<9; x++) {
+            if (S[n][x] === i) return false
+        }
+        return true;
+    }
+    
+    function checkRow(m, i) {
+        for (let y=0; y<9; y++) {
+            if (S[y][m] === i) return false;
+        }
+        return true;
+    }
+    
+    function checkBlock(n, m, i) {
+        for (let x=0; x<3; x++) {
+            for (let y=0; y<3; y++) {
+                const qn = (n/3)|0;
+                const qm = (m/3)|0;
+    
+                if (S[qn*3+x][qm*3+y] === i) return false;
+            }
+        }
+        return true;
+    }
+
+    function sudoku(I) {
+        if (I == unsolved.length) {
+            let result = '';
+            for (const s of S) {
+                result += s.join(' ') + '\n';
+            }
+            console.log(result);
+            process.exit(0);
+        }
+
+        
+        for (let i=1; i<=9; i++) {
+            const [n, m] = unsolved[I];
+
+            if (checkCol(n, i) && checkRow(m, i) && checkBlock(n, m, i)) {
+                S[n][m] = i;
+                sudoku(I+1)
+                S[n][m] = 0;
+            }
+        }
+    }
+
+    sudoku(0);
+});
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+/**
+ * 
  * 스도쿠(2580)
  * 
  * S = 9*9 Array
@@ -208,7 +302,15 @@ rl.on('close', ()=>{
  * 12 13 14         9*q+(r+(-1~+1))
  * 21 22 23         9*(q+1)+(r+(-1~+1))
  * 
+ * 
+ * 1. 끝까지(81개) 다 돌았으면 출력 및 리턴
+ * 2. 현재 인덱스의 수가 0이 아니면 continue
+ * 3. 현재 인덱스가 0이면 1~9 순차 대입
+ * 4. 대입 후 검증 이상이 없으면 (+1)재귀 진입
+ * 5. 검증에 이상이 있으면 다음 수 대입
+ *  
  */
+ 
 function isValid(S, I) {
     const q = (I / 9) |0;
     const r = I % 9;
