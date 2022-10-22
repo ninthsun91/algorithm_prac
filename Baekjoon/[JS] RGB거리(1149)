@@ -1,0 +1,130 @@
+/**
+ * 
+ * 0.5초!!
+ * 
+ * N개의 집. 1~N 순서대로
+ * red | green | blue
+ * 
+ * 1 !== 2
+ * N !== N-1
+ * 앞뒤로도 같으면 안됨
+ * 
+ * 
+ * 2~N~1000
+ * R G B
+ * 
+ * min of SUM(Rs + Gs + Bs)
+ * 
+ * 
+ * N=2  > RG GB BR
+ * N=3  > RGB GBR BRG
+ * 
+ * 
+ * RGB...
+ * GBR...
+ * BRG...
+ * RG RGB
+ * RG RBG
+ * 
+ * memoization + backtrack?
+ * N[i] =
+ * 
+ * 
+ * Q = N//3
+ * 
+ * 
+ * 
+ */
+
+// const rl = require('readline').createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// const input = [];
+
+// rl.on('line', (line)=>{
+//     input.push(line);
+
+//     if (input.length-1 == input[0]) rl.close();
+// });
+
+// rl.on('close', ()=>{
+//     const N = Number(input[0]);
+
+//     const cost = [];
+//     for (let i=1; i<N+1; i++) {
+//         cost.push(input[i].split(' ').map(Number));
+//     }
+
+//     let min = Number.MAX_SAFE_INTEGER;
+//     let sum = 0;
+//     function RGB(I, J) {
+//         if (I===N) {
+//             if (sum < min) min = sum;
+//             return;
+//         }
+
+//         for (let j=0; j<3; j++) {
+//             if (j === J) continue;
+
+//             sum += cost[I][j];
+//             RGB(I+1, j);
+//             sum -= cost[I][j];
+//         }
+//     }
+
+//     RGB(0, -1);
+
+//     console.log(min);
+// });
+
+
+/**
+ * 
+ * 시간초과가 난다.
+ * 지금 이래서는 단순히 백트랙이다.
+ * 
+ * 동적계획법... 활용을 해야함
+ * but, how?
+ * 
+ * 
+ * 결국 색이 세개 밖에 없기 때문에,
+ * 출발점은 세개고 최소값으로 더해가기 위해서는,
+ * N번째 집이 R을 칠한다고 했을 때 N-1이 G와 B중에서 더 싼 것을 선택해야만 한다.
+ * 
+ */
+
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    input.push(line);
+
+    if (input.length-1 == input[0]) rl.close();
+});
+
+rl.on('close', ()=>{
+    const N = Number(input[0]);
+
+    const cost = [];
+    for (let i=1; i<N+1; i++) {
+        cost.push(input[i].split(' ').map(Number));
+    }
+
+    const dp = Array.from({length: N+1}, ()=>[0,0,0]);
+
+    for (let i=1; i<=N; i++) {
+        dp[i][0] = Math.min(dp[i-1][1], dp[i-1][2]) + cost[i-1][0];
+        dp[i][1] = Math.min(dp[i-1][2], dp[i-1][0]) + cost[i-1][1];
+        dp[i][2] = Math.min(dp[i-1][1], dp[i-1][0]) + cost[i-1][2];
+    }
+
+    const result = Math.min(...dp[N])
+    console.log(result);
+});
