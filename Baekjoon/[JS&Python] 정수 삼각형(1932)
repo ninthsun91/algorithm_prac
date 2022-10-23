@@ -1,0 +1,93 @@
+/**
+ * 
+ * 
+ *         7
+ *       3   8
+ *     8   1   0
+ *   2   7   4   4
+ * 4   5   2   6   5
+ * 
+ * 삼각형. 위에서부터 아래로 내려오면서 합이 최댓값
+ * 
+ * 앞서 풀었던 문제와 유사한 문제다.
+ * 
+ * 삼각형 제일 위에 0번째 층에 0을 추가하고,
+ * 각 층에서 구할 수 있는 합 S에 대해
+ * 
+ * S[n][0] = S[n-1][0] + T[n][0]
+ * S[n][n-1] = S[n-1][n-2] + T[n][n-1]
+ * S[n][m] = Max( S[n-1][m-1], S[n-1][m] ) + T[n][m]
+ * 
+ */
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line)=>{
+    input.push(line);
+
+    if (input.length-1 == input[0]) rl.close();
+});
+
+rl.on('close', ()=>{
+    const N = input[0];
+    input[0] = 0;
+    const S = [];
+    for (let i=0; i<=N; i++) {
+        S.push([]);
+
+        let j = 0;
+        do {
+            S[i].push(0);
+        } while (j++<i-1)
+    }
+
+    for (let n=1; n<=N; n++) {
+        const T = input[n].split(' ').map(Number);
+
+        for (let m=0; m<n; m++) {
+            switch (m) {
+                case 0:
+                    S[n][0] = S[n-1][0] + T[0];
+                    break;
+                case n-1:
+                    S[n][n-1] = S[n-1][n-2] + T[n-1];
+                    break;
+                default:
+                    S[n][m] = Math.max(S[n-1][m-1], S[n-1][m]) + T[m];
+                    break;
+            }
+        }
+    }
+    const max = Math.max(...S[N]);
+    console.log(max);
+});
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+N = int(input())
+
+S = [[0]]*(N+1)
+for i in range(1, N+1):
+    S[i] = list(0 for n in range(i))
+
+for n in range(1, N+1):
+    T = list(map(int, input().split(' ')))
+    for m in range(n):
+        if m==0:
+            S[n][0] = S[n-1][0] + T[0]
+        elif m==n-1:
+            S[n][n-1] = S[n-1][m-1] + T[m]
+        else:
+            S[n][m] = max(S[n-1][m-1], S[n-1][m]) + T[m]
+
+print(max(S[N]))
