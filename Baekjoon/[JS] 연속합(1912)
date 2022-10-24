@@ -1,0 +1,162 @@
+
+const rl = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const input = [];
+
+rl.on('line', (line) => {
+    input.push(line);
+
+    if (input.length === 2) rl.close();
+});
+
+rl.on('close', () => {
+    const N = Number(input[0]);
+    const Seq = input[1].split(' ').map(Number);
+    const Sum = Array.from({length: N}, ()=>0);
+
+    Sum[0] = Seq[0];
+    for (let n=1; n<N; n++) {
+        Sum[n] = Math.max( Sum[n-1]+Seq[n], Seq[n] );
+    }
+
+    const max = Math.max(...Sum);
+    console.log(max);
+});
+
+
+
+
+
+
+/**
+ * 
+ * 주어진 수열에서 연속된 수들의 합의 최댓값
+ * 
+ * Seq = 10, -4, 3, 1, 5, 6, -35, 12, 21, -1
+ * 
+ * 연속된 수들을 확장해 나가는 것이기 때문에
+ * n개 수들의 합 Sum일 때, Sum은 (Seq.length - n)만큼 있다.
+ * Sum[n][m] = Sum[n-1][m] + Seq[n+m]
+ * 
+ * Sum[n] 반복이 끝날때 max를 갱신.
+ * 만일 시간 초과가 날시 HEAP을 쓰자
+ * 
+ */
+
+// const rl = require('readline').createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// const input = [];
+
+// rl.on('line', (line) => {
+//     input.push(line);
+
+//     if (input.length === 2) rl.close();
+// });
+
+// rl.on('close', () => {
+//     const N = Number(input[0]);
+//     const Seq = input[1].split(' ').map(Number);
+//     const Sum = [[...Seq]];
+    
+//     let max = Math.max(...Sum[0]);
+//     if (N===1) {
+//         console.log(max);
+//         return;
+//     }
+
+//     for (let n=1; n<N; n++) {
+//         Sum.push([]);
+//         for (let m=0; m<N-n; m++) {
+//             Sum[n].push(Sum[n-1][m] + Seq[n+m]);
+//         }
+//         let newMax = Math.max(...Sum[n]);
+//         if (newMax > max) max = newMax;
+//     }
+
+//     console.log(Sum);
+//     console.log(max);
+// });
+
+
+/**
+ * 
+ * 메모리 초과가 났다.
+ * 배열 최대 길이는 2^32이지만,
+ * 2차원 배열이 되면 현재 입력 최댓값 100000일 때
+ * 10^5 * 10^5 = 10^10
+ * 
+ * 10000000000
+ * 4294967294
+ * 
+ * 2차원 상의 크기로는 초과하는데 이거 때문일 수도 있는 것 같다.
+ * 
+ * newSum[m] = Sum[m] + Seq[n+m]
+ * Sum = newSum
+ * 
+ * 으로 합의 저장소를 제한하면서 계산해보자.
+ * 
+ * 그래도 메모리 초과.
+ * 
+ * 혹시 10만개짜리 Math.max()가 문제인가 싶었지만 별도의 테스트에서는 메모리 문제는 없었다.
+ * 
+ * 
+ * 답은 훨씬 단순했다.
+ * n번째까지 수보다 n번째 수 자체가 더 크다면,
+ * 그 앞에서 어떤 조합의 합이 나와도 n번째 수보다 작다.
+ * 
+ * 예를들어,
+ * 3 5 -10 1 -1
+ * 이런 수열이 주어질 때,
+ * 4번째 수인 1 까지의 합과 1을 비교하면 -1과 1이다.
+ * 그리고 3, 5 , -10 안에서 다시 5부터 연산을 시작한다해도 결국 연속된 합이 1보다 작다.
+ * 
+ * 따라서, Sum[n] = Max(Sum[n-1] + Seq[n] , Seq[n])
+ * 
+ */
+
+
+// const rl = require('readline').createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+// });
+
+// const input = [];
+
+// rl.on('line', (line) => {
+//     input.push(line);
+
+//     if (input.length === 2) rl.close();
+// });
+
+// rl.on('close', () => {
+//     const N = Number(input[0]);
+//     const Seq = input[1].split(' ').map(Number);
+//     let Sum = [...Seq];
+    
+//     let max = Math.max(...Sum);
+//     if (N===1) {
+//         console.log(max);
+//         return;
+//     }
+
+//     let newSum = [];
+//     for (let i=0; i<N; i++) {
+//         newSum.push(0);
+//     }
+//     for (let n=1; n<N; n++) {
+//         for (let m=0; m<N-n; m++) {
+//             newSum[m] = Sum[m] + Seq[n+m];
+//         }
+//         Sum = newSum.slice(0, N-n);
+//         let newMax = Math.max(...Sum);
+//         if (newMax > max) max = newMax;
+//     }
+
+//     console.log(max);
+// });
