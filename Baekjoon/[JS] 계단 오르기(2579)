@@ -68,9 +68,29 @@
  * n 이 3일 때 앞서서 sum[2]가 30이 되기 위해 한칸만 건넜으므로 sum[3]은 sum[1]을 사용할 수 밖에 없다.
  * 하지만 실제로는 sum[2]가 최대값이 아니었던 20에서 넘어오는게 더 크다.
  * 
- * 그럼 차라리 가능한 모든 sum[n]의 합을 Set에 담는다면?
+ * 각 칸별로 합을 조금 나열하며 여러 규칙을 찾아봤지만 답을 구하지 못했다.
+ * Sum[0] = [ 0, 0 ]
+ * Sum[1] = [ stair[0], stair[0] ]
+ * Sum[n] = [ Sum[n-2][1] + stair[n-1],
+ *              Sum[n-1][0] + stair[n-1] ]
  * 
- * 어차피 
+ * Sum[0] = [ 0, 0 ]
+ * Sum[1] = [ stair[0], stair[0] ]
+ * Sum[n] = [ Max( Sum[n-2] ) + stair[n-1],
+ *              Max( Sum[n-1] ) + stair[n-1] ]
+ * 
+ * 최댓값을 memoization을 해가야한다는 것은 맞지만, 어느 시점의 최댓값이 의미가 있냐가 중요한 문제였다.
+ * 예를들어, n번째 칸까지의 최대합일 경우 
+ * n-1과 n-2칸의 최대값이 중요한게 아니라 n-2와 n-3칸의 최댓값이 중요하다.
+ * 
+ * 왜냐하면, n-1과 비교할 경우 그 다음 n+1에서, Max(n-1)+n이 다시 n의 최댓값이 되어,
+ * n-1, n, n+1 세 칸을 밟게 되어 버린다.
+ * 
+ * 따라서, 내가 어느 칸의 최댓값에서 왔느냐가 아닌 내가 이전에 밟은 칸이 어디냐가 기준이 되야 한다.
+ * n만 밟았는지, n과 n-1을 밟았는지 구분해야하는 것이다.
+ * 
+ * Sum[n] = Sum[n-3] + Stair[n-1] + Stair[n]
+ * Sum[n] = Sum[n-2] + Stair[n]
  * 
  */
 
@@ -89,6 +109,13 @@ rl.on('line', (line)=>{
 
 rl.on('close', () => {
     const N = stair.shift();
-    stair.unshift(0);
-    const sum = Array.from({length: N+1}, ()=>[0])
+    
+    const Sum = [ 0, stair[0], stair[0]+stair[1] ];
+    for (let n=3; n<N+1; n++) {
+        const a = Sum[n-3] + stair[n-2] + stair[n-1];
+        const b = Sum[n-2] + stair[n-1];
+        Sum.push( Math.max(a, b) );
+    }
+
+    console.log(Sum[N])    
 });
