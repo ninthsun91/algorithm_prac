@@ -1,0 +1,62 @@
+/**
+ * 
+ * 행렬 덧셈
+ * 
+ * N*M 두 행렬 A,B
+ * 두 행렬을 더하는 프로그램
+ * 
+ * N,M <= 100
+ * -100 ~ element ~ 100
+ * 
+ * add same index
+ * 
+ */
+
+const rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
+
+const input = [];
+
+rl.on('line', (line) => {
+    input.push(line);
+});
+
+rl.on('close', () => {
+    const [N, M] = input.shift().split(' ').map(Number);
+
+    let result = '';
+    for (let i=0; i<N; i++) {
+        const Metrix1 = input[i].split(' ').map(Number);
+        const Metrix2 = input[i+N].split(' ').map(Number);
+
+        for (let j=0; j<M; j++) {
+            result += Metrix1.shift() + Metrix2.shift() + ' ';
+        }
+        result += '\n';
+    }
+
+    console.log(result);
+});
+
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+[N, M] = map(int, input().split())
+
+metrix1 = []
+for i in range(N):
+    metrix1.append(input().split())
+metrix2 = []
+for i in range(N):
+    metrix2.append(input().split())
+
+result = ''
+for n in range(N):
+    for m in range(M):
+        result += str(int(metrix1[n][m]) + int(metrix2[n][m])) + ' '
+    result += '\n'
+
+print(result)
