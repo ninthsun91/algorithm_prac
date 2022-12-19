@@ -1,0 +1,50 @@
+/**
+ * 
+ * 최댓값
+ * 
+ * 9*9
+ * find MAX
+ * 
+ * value & index
+ * 
+ */
+
+const rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
+
+const input = [];
+
+rl.on('line', (line) => {
+    input.push(line);
+});
+
+rl.on('close', () => {
+    let MAX = Number.MIN_SAFE_INTEGER;
+    let index = '';
+    for (let i=0; i<9; i++) {
+        const metrix = input.shift().split(' ').map(Number);
+        for (let j=0; j<9; j++) {
+            if (MAX < metrix[j]) {
+                MAX = metrix[j];
+                index = `${i+1} ${j+1}`;
+            }
+        }
+    }
+
+    console.log(MAX + '\n' + index);
+});
+
+
+
+
+import sys
+input = sys.stdin.readline
+
+MAX = -sys.maxsize-1
+index = ''
+for i in range(9):
+    line = map(int, input().split())
+    for j, val in enumerate(line):
+        if MAX < val:
+            MAX = val
+            index = f'{i+1} {j+1}'
+print(f'{MAX}\n{index}')
