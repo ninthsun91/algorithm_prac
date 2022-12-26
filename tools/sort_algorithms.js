@@ -6,16 +6,13 @@
 
 /** */
 const bubbleSort = (array) => {
-    let cnt = 0;
     for (let i=0; i<array.length; i++) {
         for (let j=0; j<array.length; j++) {
             if (array[j] > array[j+1]) {
                 [array[j], array[j+1]] = [array[j+1], array[j]];
-                cnt++;
             }
         }
     }
-    return cnt;
 }
 
 
@@ -29,18 +26,13 @@ const bubbleSort = (array) => {
 
 /** */
 const selectionSort = (array) => {
-    let cnt = 0;
-
     for (let i=0; i<array.length; i++) {
         for (let j=i; j<array.length; j++) {
             if (array[i] > array[j]) {
                 [array[i], array[j]] = [array[j], array[i]];
-                cnt++;
             }
         }
     }
-
-    return cnt;
 }
 
 
@@ -56,20 +48,15 @@ const selectionSort = (array) => {
 
 /** */
 const insertSort = (array) => {
-    let cnt = 0;
-
     for (let i=1; i<array.length; i++) {
         const target = array[i];
 
         let j = i-1;
         for ( ; j>-1 && target < array[j]; j--) {
             array[j+1] = array[j];
-            cnt++;
         }
         array[++j] = target;
     }
-
-    return cnt;
 }
 
 
@@ -152,11 +139,12 @@ const quickSort = (array, start, end) => {
         left = quickSort(left, 0, left.length);
         right = quickSort(right, 0, right.length);
 
-        let index = start;
-        while (left.length) array[index++] = left.shift();
-        while (right.length) array[index++] = right.shift();
+        // let index = start;
+        // while (left.length) array[index++] = left.shift();
+        // while (right.length) array[index++] = right.shift();
 
-        return array.slice(start, index);
+        // return array.slice(start, index);
+        return left.concat(right);
     } else {
         return array;
     }
@@ -170,21 +158,21 @@ for (let i=0; i<10000; i++) {
 }
 
 console.time('bubble');
-bubbleSort(array);
+bubbleSort([...array]);
 console.timeEnd('bubble');
 
 console.time('selection');
-selectionSort(array);
+selectionSort([...array]);
 console.timeEnd('selection');
 
 console.time('insert');
-insertSort(array);
+insertSort([...array]);
 console.timeEnd('insert');
 
 console.time('merge');
-mergeSort(array);
+mergeSort([...array], 0, array.length);
 console.timeEnd('merge');
 
 console.time('quick');
-quickSort(array);
+quickSort([...array], 0, array.length);
 console.timeEnd('quick');
