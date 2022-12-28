@@ -64,30 +64,9 @@ class Queue {
 const queue = new Queue();
 
 for (const cmd of input) {
+    if (!cmd) continue;
     const [key, value] = cmd.trim().split(' ');
-
-    switch (key) {
-        case 'push':
-            queue.push(value);
-            break;
-        case 'pop':
-            queue.pop();
-            break;
-        case 'size':
-            queue.size();
-            break;
-        case 'empty':
-            queue.empty();
-            break;
-        case 'front':
-            queue.front();
-            break;
-        case 'back':
-            queue.back();
-            break;
-    }
-    // value ? queue[key](value) : queue[key]();
-    // console.log(queue);
+    value ? queue[key](value) : queue[key]();
 }
 console.log(result.join('\n'));
 
