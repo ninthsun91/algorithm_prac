@@ -25,6 +25,7 @@ class Node {
 class LinkedList {
     constructor(N) {
         const head = new Node(1);
+        head.next = head;
         this.head = head;
         this.tail = head;
         this.size = 1;
@@ -62,7 +63,7 @@ const [N, K] = input.split(' ').map(Number);
 
 const seq = new LinkedList(N);
 const josephus = [];
-
+console.log(seq);
 for (let n=0; n<N; n++) {
     const num = seq.pop(K);
     josephus.push(num);
